@@ -437,15 +437,18 @@ nonce. Approvers sign that new Act's binding digest.
 
 ### 6.0 Rulings and obligations (normative)
 
-A decision whose first outcome (`then[0].type`) is `emit` or `action` (NOMOS-SPEC-001 §4.3) is an
-**obligation**: it records an event or requests a named action. It never permits, refuses or
-escalates the action an Act proposes. A relying party MUST leave obligations out of evaluation and
+A decision whose first outcome (`then[0].type`) is `emit`, or is `action` naming an action the
+artifact declares in `execution.actions` (NOMOS-SPEC-001 §3.8, §4.3), is an **obligation**: it records
+an event or requests a declared action. It never permits, refuses or escalates the action an Act
+proposes. A relying party MUST leave obligations out of evaluation and
 resolution (§6.1, §6.2): an obligation is never the deciding decision, never outranks one, and never
 holds a result open. A relying party MAY report the obligations whose condition is TRUE.
 
-A decision whose first outcome is `set`, or a type NOMOS-SPEC-001 does not define, makes the
-artifact unevaluable: the relying party MUST return `MALFORMED` (`unevaluable_rules`). A relying
-party that does not evaluate variables cannot know what the rules decide.
+A decision whose first outcome is `set`, `action` naming an action `execution.actions` does not
+declare, or a type NOMOS-SPEC-001 does not define, makes the artifact unevaluable: the relying party
+MUST return `MALFORMED` (`unevaluable_rules`). A relying party that does not evaluate variables
+cannot know what the rules decide, and an undeclared action may be a ruling written in the wrong
+form (`action_name: "route_to"`), which a relying party must not read as permission.
 
 Before 0.7.0, an `emit` or `action` decision made the artifact unevaluable. That refused every Act
 under an authority that also logs or reports, although NOMOS-SPEC-001 has always allowed both.

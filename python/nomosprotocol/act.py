@@ -254,7 +254,7 @@ def eval_when(expr: str, facts: dict, decided_absent=()) -> str:
     return eval_when_detail(expr, facts, decided_absent)[0]
 
 RANK = {"block": 3, "escalate": 2, "allow": 1}
-OBLIGATION_OUTCOMES = {"emit", "action"}   # obligations, never rulings (SPEC-008 §6.1, 0.7.0)
+# SPEC-008 §6.0 (0.7.0): emit, and action naming a declared execution action, are obligations
 TIE_ORDERS = {"deny_wins": RANK, "allow_wins": {"allow": 3, "escalate": 2, "block": 1}, "escalate_wins": {"escalate": 3, "block": 2, "allow": 1}}
 
 def evaluate(artifact: dict, facts: dict) -> dict:
@@ -264,7 +264,11 @@ def evaluate(artifact: dict, facts: dict) -> dict:
     decided_absent = {"action_type"} | {n for n, i in inputs.items() if (i or {}).get("source") in ABSENCE_AUTHORITATIVE}
     # SPEC-008 §6.1 (0.7.0): a decision whose outcome is `emit` or `action` (NOMOS-SPEC-001 §4.3) is an
     # obligation, not a ruling, and takes no part in resolution. `set` and unknown types stay unevaluable.
-    rulings = [d for d in logic["decisions"] if ((d.get("then") or [{}])[0] or {}).get("type") not in OBLIGATION_OUTCOMES]
+    declared = set((artifact.get("execution") or {}).get("actions") or {})
+    def is_obligation(d) -> bool:
+        t = ((d.get("then") or [{}])[0] or {})
+        return t.get("type") == "emit" or (t.get("type") == "action" and t.get("action_name") in declared)
+    rulings = [d for d in logic["decisions"] if not is_obligation(d)]
     detail = [(d, *eval_when_detail(d["when"], facts, decided_absent)) for d in rulings]
     results = [(d, r) for d, r, _ in detail]
     undecided_by = {d["id"]: u for d, _, u in detail}

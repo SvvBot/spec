@@ -14312,6 +14312,485 @@
    "seen_nonces": []
   },
   {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "commit": false,
+    "decision": "MALFORMED",
+    "reason_code": "unevaluable_rules"
+   },
+   "mutant": "identity",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record",
+   "expected": {
+    "commit": false,
+    "decision": "MALFORMED",
+    "reason_code": "unevaluable_rules"
+   },
+   "mutant": "policy_record",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "commit": false,
+    "decision": "MALFORMED",
+    "reason_code": "unevaluable_rules"
+   },
+   "mutant": "policy_statement",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "commit": false,
+    "decision": "MALFORMED",
+    "reason_code": "unevaluable_rules"
+   },
+   "mutant": "drop_testimony_0",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "claim": "credit_score",
+    "decision": "TESTIMONY_INVALID",
+    "reason_code": "bad_signature"
+   },
+   "mutant": "tamper_testimony_0",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "claim": "credit_score",
+    "decision": "TESTIMONY_INVALID",
+    "reason_code": "suite_key_mismatch"
+   },
+   "mutant": "relabel_testimony_0",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "commit": false,
+    "decision": "MALFORMED",
+    "reason_code": "unevaluable_rules"
+   },
+   "mutant": "drop_testimony_1",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "claim": "dti_ratio",
+    "decision": "TESTIMONY_INVALID",
+    "reason_code": "bad_signature"
+   },
+   "mutant": "tamper_testimony_1",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "claim": "dti_ratio",
+    "decision": "TESTIMONY_INVALID",
+    "reason_code": "suite_key_mismatch"
+   },
+   "mutant": "relabel_testimony_1",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "commit": false,
+    "decision": "MALFORMED",
+    "reason_code": "unevaluable_rules"
+   },
+   "mutant": "drop_testimony_2",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "claim": "bankruptcy_active",
+    "decision": "TESTIMONY_INVALID",
+    "reason_code": "bad_signature"
+   },
+   "mutant": "tamper_testimony_2",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "claim": "bankruptcy_active",
+    "decision": "TESTIMONY_INVALID",
+    "reason_code": "suite_key_mismatch"
+   },
+   "mutant": "relabel_testimony_2",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "commit": false,
+    "decision": "MALFORMED",
+    "reason_code": "unevaluable_rules"
+   },
+   "mutant": "drop_testimony_3",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "claim": "delinquency_severity",
+    "decision": "TESTIMONY_INVALID",
+    "reason_code": "bad_signature"
+   },
+   "mutant": "tamper_testimony_3",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "claim": "delinquency_severity",
+    "decision": "TESTIMONY_INVALID",
+    "reason_code": "suite_key_mismatch"
+   },
+   "mutant": "relabel_testimony_3",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "decision": "ISSUER_NOT_RECOGNIZED",
+    "reason_code": "chain_broken"
+   },
+   "mutant": "drop_cert_0",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "decision": "ISSUER_NOT_RECOGNIZED",
+    "reason_code": "bad_signature"
+   },
+   "mutant": "widen_cert_0",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "claim": "credit_score",
+    "decision": "TESTIMONY_INVALID",
+    "reason_code": "witness_issuer_not_recognized"
+   },
+   "mutant": "drop_cert_1",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "claim": "credit_score",
+    "decision": "TESTIMONY_INVALID",
+    "reason_code": "witness_issuer_not_recognized"
+   },
+   "mutant": "widen_cert_1",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "commit": false,
+    "decision": "MALFORMED",
+    "reason_code": "unevaluable_rules"
+   },
+   "mutant": "drop_cert_2",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "commit": false,
+    "decision": "MALFORMED",
+    "reason_code": "unevaluable_rules"
+   },
+   "mutant": "widen_cert_2",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "commit": false,
+    "decision": "MALFORMED",
+    "reason_code": "unevaluable_rules"
+   },
+   "mutant": "drop_cert_3",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "commit": false,
+    "decision": "MALFORMED",
+    "reason_code": "unevaluable_rules"
+   },
+   "mutant": "widen_cert_3",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "commit": false,
+    "decision": "MALFORMED",
+    "reason_code": "unevaluable_rules"
+   },
+   "mutant": "drop_cert_4",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "commit": false,
+    "decision": "MALFORMED",
+    "reason_code": "unevaluable_rules"
+   },
+   "mutant": "widen_cert_4",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "commit": false,
+    "decision": "MALFORMED",
+    "reason_code": "unevaluable_rules"
+   },
+   "mutant": "reverse_pool",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "act_digest": "4a9d2f0b01a668db59677d7ef7fb37b7e5122bc59c1275124b8a24774f507718",
+    "commit": false,
+    "currency_policy": "record_or_statement",
+    "decision": "DENIED",
+    "in_force_source": "record",
+    "reason_code": "no_matching_rule",
+    "rule": null
+   },
+   "mutant": "drop_param_amount",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "commit": false,
+    "decision": "MALFORMED",
+    "reason_code": "unevaluable_rules"
+   },
+   "mutant": "change_param_amount",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "commit": false,
+    "decision": "MALFORMED",
+    "reason_code": "unevaluable_rules"
+   },
+   "mutant": "drop_param_loan_purpose",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "commit": false,
+    "decision": "MALFORMED",
+    "reason_code": "unevaluable_rules"
+   },
+   "mutant": "change_param_loan_purpose",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "commit": false,
+    "decision": "MALFORMED",
+    "reason_code": "unevaluable_rules"
+   },
+   "mutant": "drop_param_has_cosigner",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "decision": "FACT_TYPE_VIOLATION",
+    "declared": "boolean",
+    "field": "has_cosigner",
+    "supplied_via": "action"
+   },
+   "mutant": "change_param_has_cosigner",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "decision": "SEAL_INVALID",
+    "reason_code": "hash_mismatch"
+   },
+   "mutant": "tamper_rules",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "decision": "SEAL_INVALID",
+    "reason_code": "suite_key_mismatch"
+   },
+   "mutant": "relabel_seal",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "decision": "WRONG_RELYING_PARTY"
+   },
+   "mutant": "readdress",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "decision": "FACT_SOURCE_VIOLATION",
+    "field": "credit_score",
+    "reason_code": "duplicate"
+   },
+   "mutant": "presenter_claims_fact",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
+   "base": "undeclared_action_is_unevaluable",
+   "currency_policy": "record_or_statement",
+   "expected": {
+    "decision": "MALFORMED",
+    "reason_code": "bad_envelope"
+   },
+   "mutant": "bad_authority",
+   "now": "2026-10-01T12:00:00.000Z",
+   "revoked_artifacts": [],
+   "seen_nonces": []
+  },
+  {
    "base": "superseded_version_presented",
    "currency_policy": "record_or_statement",
    "expected": {
@@ -25292,6 +25771,6 @@
    "seen_nonces": []
   }
  ],
- "count": 1767,
+ "count": 1804,
  "spec": "NOMOS-SPEC-008 0.6.0"
 }

@@ -11,9 +11,9 @@ Spec versions follow [Semantic Versioning](https://semver.org/).
 
 Found by running a client journey end to end: a policy compiled in the reference Studio, sealed, and enforced through Acts.
 
-- **SPEC-008 §6.0 (new): rulings and obligations.** A decision whose outcome is `emit` or `action` (SPEC-001 §4.3) is an obligation. It takes no part in evaluation or resolution and may be reported. `set` and undefined types still make the artifact `MALFORMED` (`unevaluable_rules`). Before, any `emit` or `action` decision made the artifact unevaluable, refusing every Act under an authority that also logs or reports.
+- **SPEC-008 §6.0 (new): rulings and obligations.** A decision whose outcome is `emit`, or `action` naming an action declared in `execution.actions` (SPEC-001 §3.8, §4.3), is an obligation. It takes no part in evaluation or resolution and may be reported. `set`, an undeclared `action` (possibly a ruling in the wrong form, such as `action_name: "route_to"`) and undefined types still make the artifact `MALFORMED` (`unevaluable_rules`). Before, any `emit` or `action` decision made the artifact unevaluable, refusing every Act under an authority that also logs or reports.
 - **SPEC-001 Amendment 2.4.0: comparisons between two fields.** A single unquoted identifier on the right-hand side is a field reference (`amount > budget_remaining`). It is undecided when absent and named among missing inputs. String constants are quoted. The reference deployment's server read it as a string literal, so `can()` and an Act disagreed on the same artifact. Both now agree.
-- **Vectors:** `obligation_takes_no_part_in_resolution` and `set_outcome_is_unevaluable` (45 vectors). The Python reference (`nomosprotocol.act`) and `@nomosprotocol/verify` both pass all of them.
+- **Vectors:** `obligation_takes_no_part_in_resolution`, `set_outcome_is_unevaluable` and `undeclared_action_is_unevaluable` (46 vectors). The Python reference (`nomosprotocol.act`) and `@nomosprotocol/verify` both pass all of them.
 
 ## [Repository] — 2026-10-27 (The Python reference becomes the `nomosprotocol` package)
 
