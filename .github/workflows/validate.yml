@@ -20,7 +20,9 @@ jobs:
           python-version: "3.11"
 
       - name: Install jsonschema
-        run: pip install jsonschema
+        # The verifiers import the nomosprotocol package; installing it brings its own
+        # dependencies (cryptography) from python/pyproject.toml, the one place they are declared.
+        run: pip install jsonschema ./python
 
       - name: Validate .nomos examples against artifact schema
         run: |
@@ -71,3 +73,5 @@ jobs:
             echo "Checking $f ..."
             python verify/verify.py "$f"
           done
+      - name: Act vectors (NOMOS-SPEC-008) through the Python reference
+        run: python act-vectors/check.py act-vectors/vectors.json
