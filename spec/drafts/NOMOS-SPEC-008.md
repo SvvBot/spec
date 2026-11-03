@@ -1,7 +1,7 @@
 # NOMOS-SPEC-008: Act Binding
 
 **Status:** Draft
-**Version:** 0.6.0
+**Version:** 0.7.0
 **Extends:** NOMOS-SPEC-001 v2.2.0 with amendment 2.3.0, NOMOS-SPEC-007 rev. 1.9.0, NOMOS-SPEC-010 0.1.0
 **Proposed:** 2026-09-27
 **Authors:** Safehaven AI Corp. / NOMOS Protocol Working Group
@@ -434,6 +434,23 @@ The verdict:
 
 The presenter can resubmit an escalated action with consents added, as a new Act with a new
 nonce. Approvers sign that new Act's binding digest.
+
+### 6.0 Rulings and obligations (normative)
+
+A decision whose first outcome (`then[0].type`) is `emit` or `action` (NOMOS-SPEC-001 §4.3) is an
+**obligation**: it records an event or requests a named action. It never permits, refuses or
+escalates the action an Act proposes. A relying party MUST leave obligations out of evaluation and
+resolution (§6.1, §6.2): an obligation is never the deciding decision, never outranks one, and never
+holds a result open. A relying party MAY report the obligations whose condition is TRUE.
+
+A decision whose first outcome is `set`, or a type NOMOS-SPEC-001 does not define, makes the
+artifact unevaluable: the relying party MUST return `MALFORMED` (`unevaluable_rules`). A relying
+party that does not evaluate variables cannot know what the rules decide.
+
+Before 0.7.0, an `emit` or `action` decision made the artifact unevaluable. That refused every Act
+under an authority that also logs or reports, although NOMOS-SPEC-001 has always allowed both.
+
+---
 
 ### 6.1 No rule matched (normative)
 
