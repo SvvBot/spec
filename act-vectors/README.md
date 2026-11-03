@@ -1,6 +1,6 @@
 # NOMOS-SPEC-008 reference implementation and test vectors
 
-`act_verify.py` verifies an Act at the relying party (NOMOS-SPEC-008 0.6.0): audience, window and replay; the rule
+`act_verify.py` verifies an Act at the relying party (NOMOS-SPEC-008 0.7.0): audience, window and replay; the rule
 issuer's chain (NOMOS-SPEC-007 rev. 1.9 target-first, scope-aware resolution, shared in `../python/nomosprotocol`); every testimony statement
 against its witness's `claim` scope; every fact against the channel and type its input declares; the sealed
 rules over exactly those facts; and, for escalations, consents signed over this Act's binding
@@ -16,7 +16,7 @@ escalations is refused (`ambiguous_escalation`).
 pip install cryptography
 python3 generate.py pub_lending_v1.nomos > vectors.json   # deterministic, byte-identical
 python3 check.py vectors.json
-45 passed, 0 failed     # 43 vectors, plus NaN and Infinity built in memory
+48 passed, 0 failed     # 46 vectors, plus NaN and Infinity built in memory
 ```
 
 `pub_lending_v1.nomos` is the generator's input: the public Consumer Loan Approval policy, which `generate.py`
@@ -51,6 +51,9 @@ purpose. Never use them as trust material.**
 | action_param_wrong_type | FACT_TYPE_VIOLATION | An amount sent as a string is refused before any rule reads it |
 | omitted_fact_exists_undecided | INCOMPLETE | `exists(fraud_alert)` on a withheld witness statement is undecided, not false |
 | nested_param_wrong_type_undecided | INCOMPLETE | `terms.months > 360` on the string "480" inside an object parameter is undecided, not false |
+| obligation_takes_no_part_in_resolution | AUTHORIZED | An `emit` decision at the highest priority is an obligation, not a ruling (§6.0) |
+| set_outcome_is_unevaluable | MALFORMED | A `set` decision makes the rules unevaluable for a relying party (§6.0) |
+| undeclared_action_is_unevaluable | MALFORMED | An `action` naming nothing in `execution.actions` may be a ruling in the wrong form; refused (§6.0) |
 | superseded_version_presented | SUPERSEDED | Genuine, unrevoked, but not the version in force: valid for audit, not for a new action |
 | revoked_authority | ARTIFACT_REVOKED | Every key still valid; the rules themselves withdrawn |
 | in_force_statement_accepted | AUTHORIZED | No relying-party record; the issuer's signed in-force statement establishes currency |

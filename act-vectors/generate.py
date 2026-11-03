@@ -218,6 +218,27 @@ def main():
         {"decision": "INCOMPLETE", "reason_code": "undecided_rules", "open_rules": ["R14"], "open_facts": ["terms.months"], "commit": False},
         "The first case under a policy that refuses terms over 360 months, with the term sent as the string \"480\" inside an object-typed parameter. The object passes the §7.1 type check; the comparison inside it cannot be evaluated on a string, so R14 is undecided rather than false, and nothing commits.")
 
+    # ── §6.1 (0.7.0) obligations: emit and action outcomes take no part in resolution ──
+    obliged = build_artifact(json.load(open(sys.argv[1])), extra_rule={
+        "id": "R19", "name": "committee_report", "description": "Every application is reported to the credit committee.",
+        "when": "always == true", "then": [{"type": "emit", "event": "credit_committee_report"}], "else": [], "priority": 200})
+    add("obligation_takes_no_part_in_resolution", act(44, small, good_profile(768, 0.22), obliged),
+        {"decision": "AUTHORIZED", "rule": "R0", "commit": True},
+        "The first case under a policy that also reports every application to the credit committee, written as an `emit` outcome at the highest priority. NOMOS-SPEC-001 §4.3 allows it; it is an obligation, not a ruling, so it neither permits nor refuses the loan and R0 still decides.")
+    setter = build_artifact(json.load(open(sys.argv[1])), extra_rule={
+        "id": "R20", "name": "band_assignment", "description": "Every application is assigned the standard pricing band.",
+        "when": "always == true", "then": [{"type": "set", "variable": "pricing_band", "value": "standard"}], "else": [], "priority": 200})
+    add("set_outcome_is_unevaluable", act(45, small, good_profile(768, 0.22), setter),
+        {"decision": "MALFORMED", "reason_code": "unevaluable_rules", "commit": False},
+        "The first case under a policy whose highest-priority decision assigns a variable (`set`). A SPEC-008 relying party does not evaluate variables, so it cannot know what the rules decide and refuses the Act rather than guess.")
+
+    routed = build_artifact(json.load(open(sys.argv[1])), extra_rule={
+        "id": "R21", "name": "large_loan_routing", "description": "Loans over $5,000 are routed to the credit committee.",
+        "when": "amount > 5000", "then": [{"type": "action", "action_name": "route_to"}], "else": [], "priority": 200})
+    add("undeclared_action_is_unevaluable", act(46, dict(small, amount=6000), good_profile(768, 0.22), routed),
+        {"decision": "MALFORMED", "reason_code": "unevaluable_rules", "commit": False},
+        "A policy whose highest-priority decision is an `action` naming \"route_to\", which `execution.actions` does not declare. It may be a routing ruling written in the wrong form; read as an obligation it would let R0 approve what the issuer meant to route. The relying party refuses rather than guess.")
+
     # ── §5.4 the authority in force ─────────────────────────────────────────────────────
     older = build_artifact(json.load(open(sys.argv[1])), version="0.9.0")
     add("superseded_version_presented", act(25, small, good_profile(768, 0.22), older),
@@ -318,9 +339,9 @@ def main():
         currency_policy="record")
 
     out = {"_readme": "NOMOS-SPEC-008 Act test vectors. Verify each case's act with root_public_key_pem as the pinned root, relying_party_id, local_facts and currency_policy (a case's own currency_policy overrides it) as the relying party's own configuration, `now` as the evaluation time and `seen_nonces` as the nonce ledger, and compare against expected (only the keys present in expected are normative). Keys are derived from published seeds: never use them as trust material.",
-           "spec": "NOMOS-SPEC-008 0.6.0",
+           "spec": "NOMOS-SPEC-008 0.7.0",
            "root_public_key_pem": ROOT["pem"], "relying_party_id": RP, "local_facts": {"is_first_loan": False}, "currency_policy": "record_or_statement",
-           "in_force": {a["meta"]["artifact_id"]: a["seal"]["hash"] for a in (art, flagged, termed, tied, limited)},
+           "in_force": {a["meta"]["artifact_id"]: a["seal"]["hash"] for a in (art, flagged, termed, tied, limited, obliged, setter, routed)},
            "keys": {k["label"]: k["kid"] for k in (ROOT, ISSUER, BUREAU, APPROVER_A, APPROVER_B, REVIEWER, ROGUE, APPROVER_A2, PASSKEY_B, UNNAMED, DOUBLE, BUREAU_P, PASSKEY_W)},
            "cases": cases}
     print(json.dumps(out, indent=2, ensure_ascii=False))
