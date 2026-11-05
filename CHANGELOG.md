@@ -7,6 +7,18 @@ Spec versions follow [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [NOMOS-SPEC-011 0.1.0, Draft] — 2026-11-06 (Source Coverage)
+
+### Added
+
+- **`spec/drafts/NOMOS-SPEC-011.md`: Source Coverage.** A sealed account, per source document, of
+  every obligation the issuer identified and what became of it: a rule, part of a rule, a decision
+  the source reserves for a person, or background. Rules name the obligations they formalise and
+  obligations quote the source's words. A verifier checks offline that every reference resolves both
+  ways and that every classification that could hide an omission names who confirmed it; with the
+  source, that every quote occurs in it. Quotes may be hashed for confidential sources. Changes no
+  verdict. One implementation (NOMOS Studio records it; sealing it is next); vectors to follow.
+
 ## [Repository] — 2026-10-27 (The Python reference becomes the `nomosprotocol` package)
 
 ### Changed
