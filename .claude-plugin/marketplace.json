@@ -13,7 +13,7 @@
       "source": {
         "source": "npm",
         "package": "nomos-guard",
-        "version": "^1.7.0"
+        "version": "^1.8.0"
       },
       "description": "Checks each MCP tool call against your sealed NOMOS policy before it runs: blocked calls say which rule refused them, and calls that need a person wait for their approval.",
       "homepage": "https://www.nomosprotocol.com/docs",
