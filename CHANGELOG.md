@@ -7,6 +7,23 @@ Spec versions follow [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [NOMOS-SPEC-011 0.1.0, Draft; NOMOS-SPEC-012 0.1.0, Draft] — 2026-11-07 (Checking each call where an Act isn't verified yet)
+
+Most agents reach their tools through a gateway or their host's own pre-tool hook, not through a system that verifies Acts. These two drafts specify that path, from the reference deployment's `nomos-guard` 1.6 (gateway approvals) and 1.7 (agent hooks for Claude Code and Cursor).
+
+- **NOMOS-SPEC-011, Tool Bindings (new).** A reviewed file saying which tool argument is which fact a policy reads (`amount_cents` × 0.01 → `loan_amount`). A fact only comes from an argument: no constants or defaults, and unknown settings are refused, not ignored. Only bound facts reach the policy, so an agent can't add `kyc_status: "verified"` to a call. A missing argument or an unlisted value stays undecided (NOMOS-SPEC-008 §6.2). Paths never reach into arrays. Unreviewed files are for observe mode only. A digest of the normal form is recorded with each decision.
+- **NOMOS-SPEC-012, Enforcement Points (new).** What a gateway or agent hook must do to call itself NOMOS-enforcing:
+  - leave ungoverned calls alone, and fail closed on everything else that can't be checked;
+  - hold on `INCOMPLETE`, and never answer the host's own prompts on `AUTHORIZED`;
+  - with several policies, the strictest wins;
+  - an organisation's setup can't be loosened or redirected from the user's settings;
+  - `ESCALATED` never becomes the host's "allow?" prompt; approvals are bound to a call digest, re-evaluated, given by people holding the role, used once and refused after revocation;
+  - observe mode is recorded as such.
+
+  A table says what each kind of enforcement point can and can't guarantee: checking calls is not containment. One implementation, so no interoperability claim.
+- **`binding-vectors/` (new):** 50 vectors (31 files, 19 calls), computed by the TypeScript implementation in `@nomosprotocol/sdk` and checked by the new Python reference, `nomosprotocol.bindings`. Both pass all 50; CI runs the Python check.
+- **`.claude-plugin/marketplace.json` (new):** this repository is the Claude Code marketplace for the reference agent hook. `claude plugin install nomos --marketplace nomos-spec/spec` installs `nomos-guard` from npm, which carries the plugin. The repository holds only the catalogue entry, no program.
+
 ## [NOMOS-SPEC-008 0.7.0, Draft; NOMOS-SPEC-001 Amendment 2.4.0, Draft] — 2026-11-03 (Obligations; comparisons between two fields)
 
 Found by running a client journey end to end: a policy compiled in the reference Studio, sealed, and enforced through Acts.

@@ -1,0 +1,23 @@
+{
+  "name": "nomos",
+  "owner": {
+    "name": "NOMOS Protocol",
+    "email": "hello@nomosprotocol.com"
+  },
+  "metadata": {
+    "description": "Your sealed NOMOS policy, checked before each tool call Claude makes."
+  },
+  "plugins": [
+    {
+      "name": "nomos",
+      "source": {
+        "source": "npm",
+        "package": "nomos-guard",
+        "version": "^1.7.0"
+      },
+      "description": "Checks each MCP tool call against your sealed NOMOS policy before it runs: blocked calls say which rule refused them, and calls that need a person wait for their approval.",
+      "homepage": "https://www.nomosprotocol.com/docs",
+      "license": "MIT"
+    }
+  ]
+}

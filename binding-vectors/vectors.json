@@ -1,0 +1,864 @@
+{
+  "spec": "NOMOS-SPEC-011",
+  "version": "0.1.0",
+  "parse": [
+    {
+      "name": "minimal",
+      "why": "the smallest valid file",
+      "json": "{\"version\":1,\"artifact\":\"art_x\",\"reviewed\":false,\"tools\":{}}",
+      "valid": true,
+      "normal": {
+        "version": 1,
+        "artifact": "art_x",
+        "reviewed": false,
+        "tools": {}
+      },
+      "digest": "9939c5d1ecb8920f2935518bd3e073c4c1a5b7de72bf2ebeac747f8e0a85f2f4"
+    },
+    {
+      "name": "full",
+      "why": "scale, map, nested argument, comments dropped from the normal form",
+      "json": "{\"version\":1,\"artifact\":\"art_refunds\",\"reviewed\":true,\"_review\":\"checked by ops, 2026-11-07\",\"tools\":{\"mcp__payments__issue_refund\":{\"_why\":\"the payments server\",\"facts\":{\"refund_amount\":{\"arg\":\"amount_cents\",\"scale\":0.01,\"_why\":\"cents to dollars\"},\"kyc_status\":{\"arg\":\"customer.kyc\",\"map\":{\"ok\":\"verified\",\"bad\":\"failed\"}},\"days\":{\"arg\":\"days_since_purchase\"}}}}}",
+      "valid": true,
+      "normal": {
+        "version": 1,
+        "artifact": "art_refunds",
+        "reviewed": true,
+        "tools": {
+          "mcp__payments__issue_refund": {
+            "facts": {
+              "refund_amount": {
+                "arg": "amount_cents",
+                "scale": 0.01
+              },
+              "kyc_status": {
+                "arg": "customer.kyc",
+                "map": {
+                  "ok": "verified",
+                  "bad": "failed"
+                }
+              },
+              "days": {
+                "arg": "days_since_purchase"
+              }
+            }
+          }
+        }
+      },
+      "digest": "9ef5deb128ae5195378d735a3a73e2de5042263d5034b8f44f0f4f42507546c0"
+    },
+    {
+      "name": "map_of_mixed_values",
+      "why": "a map may translate to strings, numbers and booleans",
+      "json": "{\"version\":1,\"artifact\":\"a\",\"reviewed\":true,\"tools\":{\"t\":{\"facts\":{\"f\":{\"arg\":\"x\",\"map\":{\"1\":true,\"yes\":1,\"no\":\"denied\"}}}}}}",
+      "valid": true,
+      "normal": {
+        "version": 1,
+        "artifact": "a",
+        "reviewed": true,
+        "tools": {
+          "t": {
+            "facts": {
+              "f": {
+                "arg": "x",
+                "map": {
+                  "1": true,
+                  "yes": 1,
+                  "no": "denied"
+                }
+              }
+            }
+          }
+        }
+      },
+      "digest": "914e45c6da4b7e1a0014e61053a2b6557816a307fb4b05a9d67c73334c592b64"
+    },
+    {
+      "name": "not_an_object",
+      "why": "a file must be an object",
+      "json": "[]",
+      "valid": false
+    },
+    {
+      "name": "version_2",
+      "why": "only version 1 exists",
+      "json": "{\"version\":2,\"artifact\":\"a\",\"reviewed\":true,\"tools\":{}}",
+      "valid": false
+    },
+    {
+      "name": "version_string",
+      "why": "version is the number 1",
+      "json": "{\"version\":\"1\",\"artifact\":\"a\",\"reviewed\":true,\"tools\":{}}",
+      "valid": false
+    },
+    {
+      "name": "artifact_empty",
+      "why": "the file names the policy it belongs to",
+      "json": "{\"version\":1,\"artifact\":\"\",\"reviewed\":true,\"tools\":{}}",
+      "valid": false
+    },
+    {
+      "name": "reviewed_missing",
+      "why": "reviewed is required",
+      "json": "{\"version\":1,\"artifact\":\"a\",\"tools\":{}}",
+      "valid": false
+    },
+    {
+      "name": "reviewed_string",
+      "why": "reviewed is a boolean",
+      "json": "{\"version\":1,\"artifact\":\"a\",\"reviewed\":\"yes\",\"tools\":{}}",
+      "valid": false
+    },
+    {
+      "name": "tools_array",
+      "why": "tools is an object",
+      "json": "{\"version\":1,\"artifact\":\"a\",\"reviewed\":true,\"tools\":[]}",
+      "valid": false
+    },
+    {
+      "name": "unknown_top_level",
+      "why": "an unknown setting is refused, not ignored",
+      "json": "{\"version\":1,\"artifact\":\"a\",\"reviewed\":true,\"tools\":{},\"defaults\":{\"kyc_status\":\"verified\"}}",
+      "valid": false
+    },
+    {
+      "name": "tool_proto",
+      "why": "a reserved name is refused",
+      "json": "{\"version\":1,\"artifact\":\"a\",\"reviewed\":true,\"tools\":{\"__proto__\":{\"facts\":{}}}}",
+      "valid": false
+    },
+    {
+      "name": "tool_not_object",
+      "why": "a tool entry is an object",
+      "json": "{\"version\":1,\"artifact\":\"a\",\"reviewed\":true,\"tools\":{\"t\":\"x\"}}",
+      "valid": false
+    },
+    {
+      "name": "tool_unknown_key",
+      "why": "a tool entry holds facts and nothing else",
+      "json": "{\"version\":1,\"artifact\":\"a\",\"reviewed\":true,\"tools\":{\"t\":{\"facts\":{},\"always\":\"allow\"}}}",
+      "valid": false
+    },
+    {
+      "name": "tool_without_facts",
+      "why": "facts is required",
+      "json": "{\"version\":1,\"artifact\":\"a\",\"reviewed\":true,\"tools\":{\"t\":{}}}",
+      "valid": false
+    },
+    {
+      "name": "fact_named_tool",
+      "why": "\"tool\" is set by the enforcement point",
+      "json": "{\"version\":1,\"artifact\":\"a\",\"reviewed\":true,\"tools\":{\"t\":{\"facts\":{\"tool\":{\"arg\":\"x\"}}}}}",
+      "valid": false
+    },
+    {
+      "name": "fact_constructor",
+      "why": "a reserved name is refused",
+      "json": "{\"version\":1,\"artifact\":\"a\",\"reviewed\":true,\"tools\":{\"t\":{\"facts\":{\"constructor\":{\"arg\":\"x\"}}}}}",
+      "valid": false
+    },
+    {
+      "name": "binding_not_object",
+      "why": "a fact binding is an object",
+      "json": "{\"version\":1,\"artifact\":\"a\",\"reviewed\":true,\"tools\":{\"t\":{\"facts\":{\"f\":\"x\"}}}}",
+      "valid": false
+    },
+    {
+      "name": "constant",
+      "why": "a fact only ever comes from an argument: no constants",
+      "json": "{\"version\":1,\"artifact\":\"a\",\"reviewed\":true,\"tools\":{\"t\":{\"facts\":{\"f\":{\"value\":\"verified\"}}}}}",
+      "valid": false
+    },
+    {
+      "name": "constant_alongside_arg",
+      "why": "nor alongside an argument",
+      "json": "{\"version\":1,\"artifact\":\"a\",\"reviewed\":true,\"tools\":{\"t\":{\"facts\":{\"f\":{\"arg\":\"x\",\"default\":\"verified\"}}}}}",
+      "valid": false
+    },
+    {
+      "name": "arg_missing",
+      "why": "arg is required",
+      "json": "{\"version\":1,\"artifact\":\"a\",\"reviewed\":true,\"tools\":{\"t\":{\"facts\":{\"f\":{}}}}}",
+      "valid": false
+    },
+    {
+      "name": "arg_empty",
+      "why": "arg is a non-empty path",
+      "json": "{\"version\":1,\"artifact\":\"a\",\"reviewed\":true,\"tools\":{\"t\":{\"facts\":{\"f\":{\"arg\":\"\"}}}}}",
+      "valid": false
+    },
+    {
+      "name": "arg_empty_segment",
+      "why": "every segment is non-empty",
+      "json": "{\"version\":1,\"artifact\":\"a\",\"reviewed\":true,\"tools\":{\"t\":{\"facts\":{\"f\":{\"arg\":\"a..b\"}}}}}",
+      "valid": false
+    },
+    {
+      "name": "arg_proto_segment",
+      "why": "a reserved segment is refused",
+      "json": "{\"version\":1,\"artifact\":\"a\",\"reviewed\":true,\"tools\":{\"t\":{\"facts\":{\"f\":{\"arg\":\"a.__proto__\"}}}}}",
+      "valid": false
+    },
+    {
+      "name": "scale_and_map",
+      "why": "scale or map, not both",
+      "json": "{\"version\":1,\"artifact\":\"a\",\"reviewed\":true,\"tools\":{\"t\":{\"facts\":{\"f\":{\"arg\":\"x\",\"scale\":2,\"map\":{\"a\":\"b\"}}}}}}",
+      "valid": false
+    },
+    {
+      "name": "scale_zero",
+      "why": "scale is a non-zero number",
+      "json": "{\"version\":1,\"artifact\":\"a\",\"reviewed\":true,\"tools\":{\"t\":{\"facts\":{\"f\":{\"arg\":\"x\",\"scale\":0}}}}}",
+      "valid": false
+    },
+    {
+      "name": "scale_string",
+      "why": "scale is a number",
+      "json": "{\"version\":1,\"artifact\":\"a\",\"reviewed\":true,\"tools\":{\"t\":{\"facts\":{\"f\":{\"arg\":\"x\",\"scale\":\"0.01\"}}}}}",
+      "valid": false
+    },
+    {
+      "name": "map_array",
+      "why": "map is an object",
+      "json": "{\"version\":1,\"artifact\":\"a\",\"reviewed\":true,\"tools\":{\"t\":{\"facts\":{\"f\":{\"arg\":\"x\",\"map\":[\"a\"]}}}}}",
+      "valid": false
+    },
+    {
+      "name": "map_object_value",
+      "why": "map holds plain values only",
+      "json": "{\"version\":1,\"artifact\":\"a\",\"reviewed\":true,\"tools\":{\"t\":{\"facts\":{\"f\":{\"arg\":\"x\",\"map\":{\"a\":{\"b\":1}}}}}}}",
+      "valid": false
+    },
+    {
+      "name": "map_null_value",
+      "why": "null is not a plain value here",
+      "json": "{\"version\":1,\"artifact\":\"a\",\"reviewed\":true,\"tools\":{\"t\":{\"facts\":{\"f\":{\"arg\":\"x\",\"map\":{\"a\":null}}}}}}",
+      "valid": false
+    },
+    {
+      "name": "map_proto_key",
+      "why": "a reserved key is refused",
+      "json": "{\"version\":1,\"artifact\":\"a\",\"reviewed\":true,\"tools\":{\"t\":{\"facts\":{\"f\":{\"arg\":\"x\",\"map\":{\"__proto__\":\"y\"}}}}}}",
+      "valid": false
+    }
+  ],
+  "apply": [
+    {
+      "name": "copy_values",
+      "why": "a number, a string and a boolean pass through",
+      "bindings": {
+        "version": 1,
+        "artifact": "art_v",
+        "reviewed": true,
+        "tools": {
+          "t": {
+            "facts": {
+              "amount": {
+                "arg": "amount"
+              },
+              "region": {
+                "arg": "region"
+              },
+              "defective": {
+                "arg": "defective"
+              }
+            }
+          }
+        }
+      },
+      "tool": "t",
+      "args": {
+        "amount": 50,
+        "region": "EU",
+        "defective": true
+      },
+      "inputs": {
+        "tool": "t",
+        "amount": 50,
+        "region": "EU",
+        "defective": true
+      },
+      "unresolved": []
+    },
+    {
+      "name": "other_tool",
+      "why": "a tool the file has nothing for: only the tool name",
+      "bindings": {
+        "version": 1,
+        "artifact": "art_v",
+        "reviewed": true,
+        "tools": {
+          "t": {
+            "facts": {
+              "amount": {
+                "arg": "amount"
+              }
+            }
+          }
+        }
+      },
+      "tool": "u",
+      "args": {
+        "amount": 50
+      },
+      "inputs": {
+        "tool": "u"
+      },
+      "unresolved": []
+    },
+    {
+      "name": "only_bound_facts",
+      "why": "arguments with the facts' own names are not passed",
+      "bindings": {
+        "version": 1,
+        "artifact": "art_v",
+        "reviewed": true,
+        "tools": {
+          "t": {
+            "facts": {
+              "amount": {
+                "arg": "amount_cents",
+                "scale": 0.01
+              }
+            }
+          }
+        }
+      },
+      "tool": "t",
+      "args": {
+        "amount_cents": 500000,
+        "amount": 1,
+        "kyc_status": "verified",
+        "tool": "other"
+      },
+      "inputs": {
+        "tool": "t",
+        "amount": 5000
+      },
+      "unresolved": []
+    },
+    {
+      "name": "scale_cents",
+      "why": "cents to dollars, rounded to nine places",
+      "bindings": {
+        "version": 1,
+        "artifact": "art_v",
+        "reviewed": true,
+        "tools": {
+          "t": {
+            "facts": {
+              "amount": {
+                "arg": "amount_cents",
+                "scale": 0.01
+              }
+            }
+          }
+        }
+      },
+      "tool": "t",
+      "args": {
+        "amount_cents": 12345
+      },
+      "inputs": {
+        "tool": "t",
+        "amount": 123.45
+      },
+      "unresolved": []
+    },
+    {
+      "name": "scale_rounding",
+      "why": "binary noise in the product is rounded away",
+      "bindings": {
+        "version": 1,
+        "artifact": "art_v",
+        "reviewed": true,
+        "tools": {
+          "t": {
+            "facts": {
+              "amount": {
+                "arg": "x",
+                "scale": 0.1
+              }
+            }
+          }
+        }
+      },
+      "tool": "t",
+      "args": {
+        "x": 3
+      },
+      "inputs": {
+        "tool": "t",
+        "amount": 0.3
+      },
+      "unresolved": []
+    },
+    {
+      "name": "scale_negative",
+      "why": "a negative scale",
+      "bindings": {
+        "version": 1,
+        "artifact": "art_v",
+        "reviewed": true,
+        "tools": {
+          "t": {
+            "facts": {
+              "amount": {
+                "arg": "x",
+                "scale": -2.5
+              }
+            }
+          }
+        }
+      },
+      "tool": "t",
+      "args": {
+        "x": 4
+      },
+      "inputs": {
+        "tool": "t",
+        "amount": -10
+      },
+      "unresolved": []
+    },
+    {
+      "name": "scale_not_number",
+      "why": "a scaled fact needs a number",
+      "bindings": {
+        "version": 1,
+        "artifact": "art_v",
+        "reviewed": true,
+        "tools": {
+          "t": {
+            "facts": {
+              "amount": {
+                "arg": "x",
+                "scale": 0.01
+              }
+            }
+          }
+        }
+      },
+      "tool": "t",
+      "args": {
+        "x": "12345"
+      },
+      "inputs": {
+        "tool": "t"
+      },
+      "unresolved": [
+        {
+          "fact": "amount",
+          "arg": "x",
+          "why": "not_a_number"
+        }
+      ]
+    },
+    {
+      "name": "map_string",
+      "why": "a listed value is translated",
+      "bindings": {
+        "version": 1,
+        "artifact": "art_v",
+        "reviewed": true,
+        "tools": {
+          "t": {
+            "facts": {
+              "kyc_status": {
+                "arg": "kyc",
+                "map": {
+                  "ok": "verified",
+                  "bad": "failed"
+                }
+              }
+            }
+          }
+        }
+      },
+      "tool": "t",
+      "args": {
+        "kyc": "bad"
+      },
+      "inputs": {
+        "tool": "t",
+        "kyc_status": "failed"
+      },
+      "unresolved": []
+    },
+    {
+      "name": "map_boolean_key",
+      "why": "a boolean is looked up as \"true\" or \"false\"",
+      "bindings": {
+        "version": 1,
+        "artifact": "art_v",
+        "reviewed": true,
+        "tools": {
+          "t": {
+            "facts": {
+              "flag": {
+                "arg": "x",
+                "map": {
+                  "true": "yes",
+                  "false": "no"
+                }
+              }
+            }
+          }
+        }
+      },
+      "tool": "t",
+      "args": {
+        "x": false
+      },
+      "inputs": {
+        "tool": "t",
+        "flag": "no"
+      },
+      "unresolved": []
+    },
+    {
+      "name": "map_number_key",
+      "why": "a number is looked up by its shortest form",
+      "bindings": {
+        "version": 1,
+        "artifact": "art_v",
+        "reviewed": true,
+        "tools": {
+          "t": {
+            "facts": {
+              "tier": {
+                "arg": "x",
+                "map": {
+                  "1": "gold",
+                  "1.5": "silver"
+                }
+              }
+            }
+          }
+        }
+      },
+      "tool": "t",
+      "args": {
+        "x": 1.5
+      },
+      "inputs": {
+        "tool": "t",
+        "tier": "silver"
+      },
+      "unresolved": []
+    },
+    {
+      "name": "map_integer_key",
+      "why": "1 and 1.0 are the same number",
+      "bindings": {
+        "version": 1,
+        "artifact": "art_v",
+        "reviewed": true,
+        "tools": {
+          "t": {
+            "facts": {
+              "tier": {
+                "arg": "x",
+                "map": {
+                  "1": "gold"
+                }
+              }
+            }
+          }
+        }
+      },
+      "tool": "t",
+      "args": {
+        "x": 1
+      },
+      "inputs": {
+        "tool": "t",
+        "tier": "gold"
+      },
+      "unresolved": []
+    },
+    {
+      "name": "map_miss",
+      "why": "a value not listed is never guessed",
+      "bindings": {
+        "version": 1,
+        "artifact": "art_v",
+        "reviewed": true,
+        "tools": {
+          "t": {
+            "facts": {
+              "kyc_status": {
+                "arg": "kyc",
+                "map": {
+                  "ok": "verified"
+                }
+              }
+            }
+          }
+        }
+      },
+      "tool": "t",
+      "args": {
+        "kyc": "pending"
+      },
+      "inputs": {
+        "tool": "t"
+      },
+      "unresolved": [
+        {
+          "fact": "kyc_status",
+          "arg": "kyc",
+          "why": "not_in_map"
+        }
+      ]
+    },
+    {
+      "name": "missing",
+      "why": "an absent argument leaves the fact undecided",
+      "bindings": {
+        "version": 1,
+        "artifact": "art_v",
+        "reviewed": true,
+        "tools": {
+          "t": {
+            "facts": {
+              "amount": {
+                "arg": "amount"
+              }
+            }
+          }
+        }
+      },
+      "tool": "t",
+      "args": {},
+      "inputs": {
+        "tool": "t"
+      },
+      "unresolved": [
+        {
+          "fact": "amount",
+          "arg": "amount",
+          "why": "missing"
+        }
+      ]
+    },
+    {
+      "name": "null",
+      "why": "null is absent",
+      "bindings": {
+        "version": 1,
+        "artifact": "art_v",
+        "reviewed": true,
+        "tools": {
+          "t": {
+            "facts": {
+              "amount": {
+                "arg": "amount"
+              }
+            }
+          }
+        }
+      },
+      "tool": "t",
+      "args": {
+        "amount": null
+      },
+      "inputs": {
+        "tool": "t"
+      },
+      "unresolved": [
+        {
+          "fact": "amount",
+          "arg": "amount",
+          "why": "missing"
+        }
+      ]
+    },
+    {
+      "name": "nested",
+      "why": "a dotted path reaches into objects",
+      "bindings": {
+        "version": 1,
+        "artifact": "art_v",
+        "reviewed": true,
+        "tools": {
+          "t": {
+            "facts": {
+              "kyc_status": {
+                "arg": "customer.kyc"
+              }
+            }
+          }
+        }
+      },
+      "tool": "t",
+      "args": {
+        "customer": {
+          "kyc": "verified"
+        }
+      },
+      "inputs": {
+        "tool": "t",
+        "kyc_status": "verified"
+      },
+      "unresolved": []
+    },
+    {
+      "name": "nested_missing",
+      "why": "a path through something that is not an object is absent",
+      "bindings": {
+        "version": 1,
+        "artifact": "art_v",
+        "reviewed": true,
+        "tools": {
+          "t": {
+            "facts": {
+              "kyc_status": {
+                "arg": "customer.kyc"
+              }
+            }
+          }
+        }
+      },
+      "tool": "t",
+      "args": {
+        "customer": "x"
+      },
+      "inputs": {
+        "tool": "t"
+      },
+      "unresolved": [
+        {
+          "fact": "kyc_status",
+          "arg": "customer.kyc",
+          "why": "missing"
+        }
+      ]
+    },
+    {
+      "name": "no_arrays",
+      "why": "a path never reaches into an array",
+      "bindings": {
+        "version": 1,
+        "artifact": "art_v",
+        "reviewed": true,
+        "tools": {
+          "t": {
+            "facts": {
+              "first": {
+                "arg": "items.0"
+              },
+              "count": {
+                "arg": "items.length"
+              }
+            }
+          }
+        }
+      },
+      "tool": "t",
+      "args": {
+        "items": [
+          10,
+          20
+        ]
+      },
+      "inputs": {
+        "tool": "t"
+      },
+      "unresolved": [
+        {
+          "fact": "first",
+          "arg": "items.0",
+          "why": "missing"
+        },
+        {
+          "fact": "count",
+          "arg": "items.length",
+          "why": "missing"
+        }
+      ]
+    },
+    {
+      "name": "object_value",
+      "why": "an object or array is not a fact value",
+      "bindings": {
+        "version": 1,
+        "artifact": "art_v",
+        "reviewed": true,
+        "tools": {
+          "t": {
+            "facts": {
+              "amount": {
+                "arg": "amount"
+              },
+              "list": {
+                "arg": "list"
+              }
+            }
+          }
+        }
+      },
+      "tool": "t",
+      "args": {
+        "amount": {
+          "value": 5
+        },
+        "list": [
+          1
+        ]
+      },
+      "inputs": {
+        "tool": "t"
+      },
+      "unresolved": [
+        {
+          "fact": "amount",
+          "arg": "amount",
+          "why": "not_a_value"
+        },
+        {
+          "fact": "list",
+          "arg": "list",
+          "why": "not_a_value"
+        }
+      ]
+    },
+    {
+      "name": "object_value_mapped",
+      "why": "nor can a map translate one",
+      "bindings": {
+        "version": 1,
+        "artifact": "art_v",
+        "reviewed": true,
+        "tools": {
+          "t": {
+            "facts": {
+              "amount": {
+                "arg": "amount",
+                "map": {
+                  "[object Object]": "x"
+                }
+              }
+            }
+          }
+        }
+      },
+      "tool": "t",
+      "args": {
+        "amount": {
+          "value": 5
+        }
+      },
+      "inputs": {
+        "tool": "t"
+      },
+      "unresolved": [
+        {
+          "fact": "amount",
+          "arg": "amount",
+          "why": "not_a_value"
+        }
+      ]
+    }
+  ]
+}
