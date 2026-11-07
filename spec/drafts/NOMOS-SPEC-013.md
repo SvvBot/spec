@@ -240,14 +240,23 @@ root would let a registry record `verified`. This version does not define that s
 ## 7. Finding an authority
 
 A registry SHOULD offer `GET <base>/api/exchange/find?q=<description>&jurisdiction=<tag>&limit=<n>`
-returning `{ query, jurisdiction, query_terms, matches[], requested[], next? }`. Each match has
-`name`, `title`, `score`, `matched_terms`, `facts` (the inputs it reads that match the description:
-what to supply) and `rules` (the most relevant rules, each with where it comes from in the source),
-and `ask` (the query and schema URLs). `requested` lists matching requests (§8) not yet listed. With
-no match, `next` says how to request one.
+returning `{ query, jurisdiction, query_terms, places, search, matches[], requested[], next? }`.
+- `places`: jurisdictions the description names. An authority that covers none of them MUST NOT be
+  returned: a question about one place is not about another's law, however many words they share.
+- `search`: `{ method, model }`: `keyword`, or `hybrid` when meaning-based ranking was used, and the
+  model that ranked by meaning.
+- Each match has `name`, `title`, `score`, `matched_terms` (the description's own words that matched,
+  never words the registry substituted), `matched_by` (`words`, `meaning` or `both`), `facts` (the
+  inputs to supply, those the matched rules read first), `rules` (the most relevant rules, each with
+  where it comes from in the source and what it does when it applies: `prohibited`, `needs_review`,
+  `permitted`, `duty`, `classification` or `determination`), and `ask` (the query and schema URLs).
+- `requested` lists matching requests (§8) not yet listed. With no match, `next` says how to request one.
 
-Ranking is the registry's own. It SHOULD be deterministic for a given catalogue, so that the same
-description finds the same authorities.
+Ranking is the registry's own. It SHOULD give the same rules for the same description and catalogue.
+Search chooses what to ask; it MUST NOT supply facts or affect a verdict.
+
+A registry MAY order the questions it asks a person by the rules a description matched, so that
+what was asked is answered first. It MUST NOT let that order change the verdict.
 
 ## 8. Requesting an authority
 
