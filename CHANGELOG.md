@@ -7,6 +7,11 @@ Spec versions follow [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [NOMOS-SPEC-013 0.1.0, Draft] — 2026-11-07 (A registry nobody has to trust)
+
+### Added
+- **NOMOS-SPEC-013, Authority Registries (new).** How a registry of sealed authorities publishes what it offers so that relying on it doesn't mean trusting its database. A **catalogue** at `/.well-known/nomos-authorities`, signed with a platform key over the JCS of everything but the signature, naming the log head it reflects; its base comes from configuration, never the request. An append-only **log** of every listing, withdrawal, attestation and revocation, each entry hash-chained to the last, with a signed head: a client that kept an earlier head checks the log still extends it. **Standing** (compiled, published, issued) is reported apart from **evidence** (what a NOMOS-SPEC-008 relying party can evaluate, structural findings, unconditional rules), and `issued` is never inferred from a key alone. A caller **says who is asking** (`X-Nomos-Agent` / `-Acts-For` / `-Purpose`, or a `caller` object): recorded outside the transcript's audit hash; test queries answered and sealed but kept out of public history and counts; a declared organisation never shown, an API key's account only if the caller asks to be named. **Finding** an authority from a plain description, and **requesting** one that isn't listed (counted once per asker, undercounting rather than overcounting; only reviewed titles shown to people). One implementation (the NOMOS Exchange, with a zero-dependency log verifier); no interoperability claim until a second exists.
+
 ## [NOMOS-SPEC-011 0.1.0, Draft; NOMOS-SPEC-012 0.1.0, Draft] — 2026-11-07 (Checking each call where an Act isn't verified yet)
 
 Most agents reach their tools through a gateway or their host's own pre-tool hook, not through a system that verifies Acts. These two drafts specify that path, from the reference deployment's `nomos-guard` 1.6 (gateway approvals) and 1.7 (agent hooks for Claude Code and Cursor).
