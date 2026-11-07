@@ -75,3 +75,8 @@ jobs:
           done
       - name: Act vectors (NOMOS-SPEC-008) through the Python reference
         run: python act-vectors/check.py act-vectors/vectors.json
+      - name: Tool-binding vectors (NOMOS-SPEC-011) through the Python reference
+        run: python binding-vectors/check.py binding-vectors/vectors.json
+      - name: Claude Code marketplace names the agent hook's npm package
+        run: |
+          python -c "import json; m=json.load(open('.claude-plugin/marketplace.json')); p=m['plugins'][0]; assert p['name']=='nomos' and p['source']=={'source':'npm','package':'nomos-guard','version':p['source']['version']}, p; print('ok', p['source'])"

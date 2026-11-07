@@ -14,7 +14,7 @@ checked with, so there is no second implementation to drift from the reference.
     local_signer, generate_signer     keys in this process (development); pass your own Signer for a KMS
 
 Modules: jcs (RFC 8785), suites (NOMOS-SPEC-010), chain (NOMOS-SPEC-007), act (NOMOS-SPEC-008),
-statements, accept, carrier, witness, issuer.
+statements, accept, carrier, witness, issuer, bindings (NOMOS-SPEC-011 tool bindings: parse, apply, digest).
 """
 from .act import verify_act, evaluate, binding_digest
 from .chain import resolve, verify_revocation_list, fingerprint
