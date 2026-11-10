@@ -7,6 +7,12 @@ Spec versions follow [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [NOMOS-SPEC-005 1.6.0, Draft] — 2026-11-10 (A transcript you can rely on without trusting the runtime)
+
+### Added
+- **§2.4 Signed statement (RECOMMENDED).** `audit_hash` shows a transcript's fields agree; it never showed who wrote them, since whoever holds the store can recompute it. A runtime signs, when it answers, a statement of the decision (artifact and seal, the facts as kept after redaction, verdict, outcome code, deciding rule, open higher-priority count, a digest of the full evaluation, evaluator version, time) with a key it publishes, stores it exactly as signed, and returns it as `signature`. A holder checks the hash, that each shown field agrees with the statement, and the signature, with the published key alone. Transcripts minted before signing stay unsigned (`signature: null`) and are never signed afterwards. `evaluator_version` changes whenever the same facts could get a different verdict or deciding rule. Seven test vectors with a dependency-free checker (`query-statement-vectors/`); the NOMOS platform passes all seven.
+- **§6:** a transcript with only `audit_hash` MUST NOT be presented as verified.
+
 ## [NOMOS-SPEC-013 0.1.0, Draft] — 2026-11-07 (A registry nobody has to trust)
 
 ### Added

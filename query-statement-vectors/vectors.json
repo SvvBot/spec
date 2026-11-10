@@ -1,0 +1,453 @@
+{
+  "spec": "NOMOS-SPEC-005 1.6.0 §2.4",
+  "published_key": {
+    "kid": "wEYTX1hRnsYQ2WoM",
+    "algorithm": "Ed25519",
+    "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEARzN+KBkIzGdEDAb6P5QKOnVCVKTs21nS983Csu1hcr4=\n-----END PUBLIC KEY-----\n"
+  },
+  "cases": [
+    {
+      "name": "valid",
+      "record": {
+        "object": "authority_query",
+        "query_id": "qry_0000000000000000a001",
+        "artifact": {
+          "id": "art_example",
+          "version": "1.0.0",
+          "seal_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        },
+        "inputs": {
+          "risk_classification": "high_risk",
+          "processes_personal_data": true
+        },
+        "verdict": "ESCALATED",
+        "outcome_code": "RULE_TRIGGERED_ESCALATE",
+        "matched_rule_id": "rule-high-risk-review",
+        "open_higher_priority_count": 2,
+        "rules_evaluated": [
+          {
+            "rule_id": "rule-prohibited",
+            "matched": false,
+            "outcome_if_matched": "auto_rejected"
+          },
+          {
+            "rule_id": "rule-high-risk-review",
+            "matched": true,
+            "outcome_if_matched": "escalated"
+          }
+        ],
+        "evaluator_version": "2026-11-10",
+        "queried_at": "2026-11-10T09:00:00.000Z",
+        "audit_hash": "445c8a360f6dd1330a0f6a42fcad044b85bba61114de119c5f1a9d6b3afffaf5",
+        "signature": {
+          "algorithm": "Ed25519",
+          "kid": "wEYTX1hRnsYQ2WoM",
+          "value": "+Kh+4AVIflFu5Sb11c3WVWoKNPeBayKdZDJcEwHg1mQ6eaU1Z9u3qnjD+iRFxPe7QSNqfOoAx+v5B2y7SMozBQ==",
+          "statement": {
+            "type": "nomos.authority_query.statement/1",
+            "query_id": "qry_0000000000000000a001",
+            "artifact": {
+              "id": "art_example",
+              "version": "1.0.0",
+              "seal_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+            },
+            "inputs": {
+              "risk_classification": "high_risk",
+              "processes_personal_data": true
+            },
+            "verdict": "ESCALATED",
+            "outcome_code": "RULE_TRIGGERED_ESCALATE",
+            "matched_rule_id": "rule-high-risk-review",
+            "open_higher_priority_count": 2,
+            "rules_evaluated_digest": "0cb3557c624a3836602e4876fd5f23661dbab370a1743977b2a4fa0045cd5b76",
+            "evaluator_version": "2026-11-10",
+            "queried_at": "2026-11-10T09:00:00.000Z",
+            "audit_hash": "445c8a360f6dd1330a0f6a42fcad044b85bba61114de119c5f1a9d6b3afffaf5"
+          }
+        }
+      },
+      "expected": {
+        "hash": "consistent",
+        "signature": "valid",
+        "disagreements": []
+      }
+    },
+    {
+      "name": "verdict_changed_hash_recomputed",
+      "record": {
+        "object": "authority_query",
+        "query_id": "qry_0000000000000000a001",
+        "artifact": {
+          "id": "art_example",
+          "version": "1.0.0",
+          "seal_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        },
+        "inputs": {
+          "risk_classification": "high_risk",
+          "processes_personal_data": true
+        },
+        "verdict": "AUTHORIZED",
+        "outcome_code": "RULE_TRIGGERED_ESCALATE",
+        "matched_rule_id": "rule-high-risk-review",
+        "open_higher_priority_count": 2,
+        "rules_evaluated": [
+          {
+            "rule_id": "rule-prohibited",
+            "matched": false,
+            "outcome_if_matched": "auto_rejected"
+          },
+          {
+            "rule_id": "rule-high-risk-review",
+            "matched": true,
+            "outcome_if_matched": "escalated"
+          }
+        ],
+        "evaluator_version": "2026-11-10",
+        "queried_at": "2026-11-10T09:00:00.000Z",
+        "audit_hash": "1bb1c1c8ec730bed877d1ebd9a72a7f73d4826153527d9c5b9757ea6f52a58dc",
+        "signature": {
+          "algorithm": "Ed25519",
+          "kid": "wEYTX1hRnsYQ2WoM",
+          "value": "+Kh+4AVIflFu5Sb11c3WVWoKNPeBayKdZDJcEwHg1mQ6eaU1Z9u3qnjD+iRFxPe7QSNqfOoAx+v5B2y7SMozBQ==",
+          "statement": {
+            "type": "nomos.authority_query.statement/1",
+            "query_id": "qry_0000000000000000a001",
+            "artifact": {
+              "id": "art_example",
+              "version": "1.0.0",
+              "seal_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+            },
+            "inputs": {
+              "risk_classification": "high_risk",
+              "processes_personal_data": true
+            },
+            "verdict": "ESCALATED",
+            "outcome_code": "RULE_TRIGGERED_ESCALATE",
+            "matched_rule_id": "rule-high-risk-review",
+            "open_higher_priority_count": 2,
+            "rules_evaluated_digest": "0cb3557c624a3836602e4876fd5f23661dbab370a1743977b2a4fa0045cd5b76",
+            "evaluator_version": "2026-11-10",
+            "queried_at": "2026-11-10T09:00:00.000Z",
+            "audit_hash": "445c8a360f6dd1330a0f6a42fcad044b85bba61114de119c5f1a9d6b3afffaf5"
+          }
+        }
+      },
+      "expected": {
+        "hash": "consistent",
+        "signature": "valid",
+        "disagreements": [
+          "verdict",
+          "audit_hash"
+        ]
+      }
+    },
+    {
+      "name": "inputs_changed",
+      "record": {
+        "object": "authority_query",
+        "query_id": "qry_0000000000000000a001",
+        "artifact": {
+          "id": "art_example",
+          "version": "1.0.0",
+          "seal_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        },
+        "inputs": {
+          "risk_classification": "minimal",
+          "processes_personal_data": true
+        },
+        "verdict": "ESCALATED",
+        "outcome_code": "RULE_TRIGGERED_ESCALATE",
+        "matched_rule_id": "rule-high-risk-review",
+        "open_higher_priority_count": 2,
+        "rules_evaluated": [
+          {
+            "rule_id": "rule-prohibited",
+            "matched": false,
+            "outcome_if_matched": "auto_rejected"
+          },
+          {
+            "rule_id": "rule-high-risk-review",
+            "matched": true,
+            "outcome_if_matched": "escalated"
+          }
+        ],
+        "evaluator_version": "2026-11-10",
+        "queried_at": "2026-11-10T09:00:00.000Z",
+        "audit_hash": "445c8a360f6dd1330a0f6a42fcad044b85bba61114de119c5f1a9d6b3afffaf5",
+        "signature": {
+          "algorithm": "Ed25519",
+          "kid": "wEYTX1hRnsYQ2WoM",
+          "value": "+Kh+4AVIflFu5Sb11c3WVWoKNPeBayKdZDJcEwHg1mQ6eaU1Z9u3qnjD+iRFxPe7QSNqfOoAx+v5B2y7SMozBQ==",
+          "statement": {
+            "type": "nomos.authority_query.statement/1",
+            "query_id": "qry_0000000000000000a001",
+            "artifact": {
+              "id": "art_example",
+              "version": "1.0.0",
+              "seal_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+            },
+            "inputs": {
+              "risk_classification": "high_risk",
+              "processes_personal_data": true
+            },
+            "verdict": "ESCALATED",
+            "outcome_code": "RULE_TRIGGERED_ESCALATE",
+            "matched_rule_id": "rule-high-risk-review",
+            "open_higher_priority_count": 2,
+            "rules_evaluated_digest": "0cb3557c624a3836602e4876fd5f23661dbab370a1743977b2a4fa0045cd5b76",
+            "evaluator_version": "2026-11-10",
+            "queried_at": "2026-11-10T09:00:00.000Z",
+            "audit_hash": "445c8a360f6dd1330a0f6a42fcad044b85bba61114de119c5f1a9d6b3afffaf5"
+          }
+        }
+      },
+      "expected": {
+        "hash": "mismatch",
+        "signature": "valid",
+        "disagreements": [
+          "inputs"
+        ]
+      }
+    },
+    {
+      "name": "rules_evaluated_changed",
+      "record": {
+        "object": "authority_query",
+        "query_id": "qry_0000000000000000a001",
+        "artifact": {
+          "id": "art_example",
+          "version": "1.0.0",
+          "seal_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        },
+        "inputs": {
+          "risk_classification": "high_risk",
+          "processes_personal_data": true
+        },
+        "verdict": "ESCALATED",
+        "outcome_code": "RULE_TRIGGERED_ESCALATE",
+        "matched_rule_id": "rule-high-risk-review",
+        "open_higher_priority_count": 2,
+        "rules_evaluated": [
+          {
+            "rule_id": "rule-prohibited",
+            "matched": true,
+            "outcome_if_matched": "auto_rejected"
+          },
+          {
+            "rule_id": "rule-high-risk-review",
+            "matched": true,
+            "outcome_if_matched": "escalated"
+          }
+        ],
+        "evaluator_version": "2026-11-10",
+        "queried_at": "2026-11-10T09:00:00.000Z",
+        "audit_hash": "445c8a360f6dd1330a0f6a42fcad044b85bba61114de119c5f1a9d6b3afffaf5",
+        "signature": {
+          "algorithm": "Ed25519",
+          "kid": "wEYTX1hRnsYQ2WoM",
+          "value": "+Kh+4AVIflFu5Sb11c3WVWoKNPeBayKdZDJcEwHg1mQ6eaU1Z9u3qnjD+iRFxPe7QSNqfOoAx+v5B2y7SMozBQ==",
+          "statement": {
+            "type": "nomos.authority_query.statement/1",
+            "query_id": "qry_0000000000000000a001",
+            "artifact": {
+              "id": "art_example",
+              "version": "1.0.0",
+              "seal_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+            },
+            "inputs": {
+              "risk_classification": "high_risk",
+              "processes_personal_data": true
+            },
+            "verdict": "ESCALATED",
+            "outcome_code": "RULE_TRIGGERED_ESCALATE",
+            "matched_rule_id": "rule-high-risk-review",
+            "open_higher_priority_count": 2,
+            "rules_evaluated_digest": "0cb3557c624a3836602e4876fd5f23661dbab370a1743977b2a4fa0045cd5b76",
+            "evaluator_version": "2026-11-10",
+            "queried_at": "2026-11-10T09:00:00.000Z",
+            "audit_hash": "445c8a360f6dd1330a0f6a42fcad044b85bba61114de119c5f1a9d6b3afffaf5"
+          }
+        }
+      },
+      "expected": {
+        "hash": "consistent",
+        "signature": "valid",
+        "disagreements": [
+          "rules_evaluated"
+        ]
+      }
+    },
+    {
+      "name": "record_and_statement_rewritten",
+      "record": {
+        "object": "authority_query",
+        "query_id": "qry_0000000000000000a001",
+        "artifact": {
+          "id": "art_example",
+          "version": "1.0.0",
+          "seal_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        },
+        "inputs": {
+          "risk_classification": "high_risk",
+          "processes_personal_data": true
+        },
+        "verdict": "AUTHORIZED",
+        "outcome_code": "RULE_TRIGGERED_ESCALATE",
+        "matched_rule_id": "rule-high-risk-review",
+        "open_higher_priority_count": 2,
+        "rules_evaluated": [
+          {
+            "rule_id": "rule-prohibited",
+            "matched": false,
+            "outcome_if_matched": "auto_rejected"
+          },
+          {
+            "rule_id": "rule-high-risk-review",
+            "matched": true,
+            "outcome_if_matched": "escalated"
+          }
+        ],
+        "evaluator_version": "2026-11-10",
+        "queried_at": "2026-11-10T09:00:00.000Z",
+        "audit_hash": "1bb1c1c8ec730bed877d1ebd9a72a7f73d4826153527d9c5b9757ea6f52a58dc",
+        "signature": {
+          "algorithm": "Ed25519",
+          "kid": "wEYTX1hRnsYQ2WoM",
+          "value": "+Kh+4AVIflFu5Sb11c3WVWoKNPeBayKdZDJcEwHg1mQ6eaU1Z9u3qnjD+iRFxPe7QSNqfOoAx+v5B2y7SMozBQ==",
+          "statement": {
+            "type": "nomos.authority_query.statement/1",
+            "query_id": "qry_0000000000000000a001",
+            "artifact": {
+              "id": "art_example",
+              "version": "1.0.0",
+              "seal_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+            },
+            "inputs": {
+              "risk_classification": "high_risk",
+              "processes_personal_data": true
+            },
+            "verdict": "AUTHORIZED",
+            "outcome_code": "RULE_TRIGGERED_ESCALATE",
+            "matched_rule_id": "rule-high-risk-review",
+            "open_higher_priority_count": 2,
+            "rules_evaluated_digest": "0cb3557c624a3836602e4876fd5f23661dbab370a1743977b2a4fa0045cd5b76",
+            "evaluator_version": "2026-11-10",
+            "queried_at": "2026-11-10T09:00:00.000Z",
+            "audit_hash": "1bb1c1c8ec730bed877d1ebd9a72a7f73d4826153527d9c5b9757ea6f52a58dc"
+          }
+        }
+      },
+      "expected": {
+        "hash": "consistent",
+        "signature": "invalid",
+        "disagreements": []
+      }
+    },
+    {
+      "name": "unsigned_legacy",
+      "record": {
+        "object": "authority_query",
+        "query_id": "qry_0000000000000000a001",
+        "artifact": {
+          "id": "art_example",
+          "version": "1.0.0",
+          "seal_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        },
+        "inputs": {
+          "risk_classification": "high_risk",
+          "processes_personal_data": true
+        },
+        "verdict": "ESCALATED",
+        "outcome_code": "RULE_TRIGGERED_ESCALATE",
+        "matched_rule_id": "rule-high-risk-review",
+        "open_higher_priority_count": 2,
+        "rules_evaluated": [
+          {
+            "rule_id": "rule-prohibited",
+            "matched": false,
+            "outcome_if_matched": "auto_rejected"
+          },
+          {
+            "rule_id": "rule-high-risk-review",
+            "matched": true,
+            "outcome_if_matched": "escalated"
+          }
+        ],
+        "queried_at": "2026-11-10T09:00:00.000Z",
+        "audit_hash": "445c8a360f6dd1330a0f6a42fcad044b85bba61114de119c5f1a9d6b3afffaf5",
+        "signature": null
+      },
+      "expected": {
+        "hash": "consistent",
+        "signature": "unsigned",
+        "disagreements": []
+      }
+    },
+    {
+      "name": "signed_by_another_key",
+      "record": {
+        "object": "authority_query",
+        "query_id": "qry_0000000000000000a001",
+        "artifact": {
+          "id": "art_example",
+          "version": "1.0.0",
+          "seal_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        },
+        "inputs": {
+          "risk_classification": "high_risk",
+          "processes_personal_data": true
+        },
+        "verdict": "ESCALATED",
+        "outcome_code": "RULE_TRIGGERED_ESCALATE",
+        "matched_rule_id": "rule-high-risk-review",
+        "open_higher_priority_count": 2,
+        "rules_evaluated": [
+          {
+            "rule_id": "rule-prohibited",
+            "matched": false,
+            "outcome_if_matched": "auto_rejected"
+          },
+          {
+            "rule_id": "rule-high-risk-review",
+            "matched": true,
+            "outcome_if_matched": "escalated"
+          }
+        ],
+        "evaluator_version": "2026-11-10",
+        "queried_at": "2026-11-10T09:00:00.000Z",
+        "audit_hash": "445c8a360f6dd1330a0f6a42fcad044b85bba61114de119c5f1a9d6b3afffaf5",
+        "signature": {
+          "algorithm": "Ed25519",
+          "kid": "Wc0FZWsCTAq5lKPX",
+          "value": "M6zWWFaVT6kLmNNKRR27OxY6afgJduySnaQwBit7P925M+F01210mNfzQkQ21+Nn2e+SPZPYZ6n1qzCTT0QHDQ==",
+          "statement": {
+            "type": "nomos.authority_query.statement/1",
+            "query_id": "qry_0000000000000000a001",
+            "artifact": {
+              "id": "art_example",
+              "version": "1.0.0",
+              "seal_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+            },
+            "inputs": {
+              "risk_classification": "high_risk",
+              "processes_personal_data": true
+            },
+            "verdict": "ESCALATED",
+            "outcome_code": "RULE_TRIGGERED_ESCALATE",
+            "matched_rule_id": "rule-high-risk-review",
+            "open_higher_priority_count": 2,
+            "rules_evaluated_digest": "0cb3557c624a3836602e4876fd5f23661dbab370a1743977b2a4fa0045cd5b76",
+            "evaluator_version": "2026-11-10",
+            "queried_at": "2026-11-10T09:00:00.000Z",
+            "audit_hash": "445c8a360f6dd1330a0f6a42fcad044b85bba61114de119c5f1a9d6b3afffaf5"
+          }
+        }
+      },
+      "expected": {
+        "hash": "consistent",
+        "signature": "wrong_key",
+        "disagreements": []
+      }
+    }
+  ]
+}
