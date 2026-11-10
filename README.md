@@ -1,20 +1,8 @@
 # NOMOS Protocol — Open Specification
 
-[![Spec 001](https://img.shields.io/badge/spec-NOMOS--SPEC--001-blue)](spec/NOMOS-SPEC-001.md)
-[![Spec 002](https://img.shields.io/badge/spec-NOMOS--SPEC--002-green)](spec/NOMOS-SPEC-002.md)
-[![Spec 003](https://img.shields.io/badge/spec-NOMOS--SPEC--003-orange)](spec/NOMOS-SPEC-003.md)
-[![Spec 004](https://img.shields.io/badge/spec-NOMOS--SPEC--004-blueviolet)](spec/NOMOS-SPEC-004.md)
-[![Spec 005](https://img.shields.io/badge/spec-NOMOS--SPEC--005-yellow)](spec/NOMOS-SPEC-005.md)
-[![Spec 006](https://img.shields.io/badge/spec-NOMOS--SPEC--006-red)](spec/NOMOS-SPEC-006.md)
-[![Spec 007 Draft](https://img.shields.io/badge/spec-NOMOS--SPEC--007%20(Draft)-lightgrey)](spec/NOMOS-SPEC-007.md)
-[![Spec 008 Draft](https://img.shields.io/badge/spec-NOMOS--SPEC--008%20(Draft)-lightgrey)](spec/drafts/NOMOS-SPEC-008.md)
-[![Spec 009 Draft](https://img.shields.io/badge/spec-NOMOS--SPEC--009%20(Draft)-lightgrey)](spec/drafts/NOMOS-SPEC-009.md)
-[![Spec 010 Draft](https://img.shields.io/badge/spec-NOMOS--SPEC--010%20(Draft)-lightgrey)](spec/drafts/NOMOS-SPEC-010.md)
-[![Spec 011 Draft](https://img.shields.io/badge/spec-NOMOS--SPEC--011%20(Draft)-lightgrey)](spec/drafts/NOMOS-SPEC-011.md)
-[![Spec 012 Draft](https://img.shields.io/badge/spec-NOMOS--SPEC--012%20(Draft)-lightgrey)](spec/drafts/NOMOS-SPEC-012.md)
-[![Spec 013 Draft](https://img.shields.io/badge/spec-NOMOS--SPEC--013%20(Draft)-lightgrey)](spec/drafts/NOMOS-SPEC-013.md)
-[![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 [![Validate](https://github.com/nomos-spec/spec/actions/workflows/validate.yml/badge.svg)](https://github.com/nomos-spec/spec/actions/workflows/validate.yml)
+[![Specifications: 13](https://img.shields.io/badge/specifications-13-blue)](spec/)
+[![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 [![IANA Media Type](https://img.shields.io/badge/IANA-application%2Fvnd.nomos%2Bjson-brightgreen)](https://www.iana.org/assignments/media-types/application/vnd.nomos+json)
 
 The **NOMOS Protocol** is an open, vendor-neutral specification for **Computable Authority**: making an institution's authority over an action something any system can check, before the action takes effect. Its principle: authorize the act, not the agent.
@@ -26,6 +14,98 @@ An institution's rules travel as a `.nomos` artifact: a JSON document containing
 The research behind the discipline is at **[computableauthority.com](https://computableauthority.com)**.
 
 Agents increasingly act on behalf of organisations — a bank, a hospital, a ministry, a supplier. A service an agent calls needs more than "this is an agent": it needs to know who the agent acts for, what it is allowed to do, and whether it can check that without calling anyone. NOMOS-SPEC-001 through 010 specify that, end to end: the institution's rules as a sealed artifact (001–006), the chain of certificates that lets a stranger recognize the issuer (007), the **Act** (008) — a self-verifying package that binds one exact action to those rules, to signed facts from authorized witnesses, and to human consents, so the system that would make the change verifies it locally and commits exactly that change or nothing — how an agent finds that system and hands it the Act (009), and the signature suites every verifier accepts (010). Where the system can't verify an Act yet, NOMOS-SPEC-011 and 012 say how a gateway or an agent's own pre-tool hook checks each call first: which tool argument is which fact the policy reads (011), and what such an enforcement point must do, from failing closed to approvals bound to one exact call (012). NOMOS-SPEC-013 says how a registry of authorities publishes what it offers so nobody has to trust it: a signed catalogue, an append-only log with a signed head, standing kept apart from evidence, and how a caller says who is asking.
+
+**Contents:** [Specifications](#specifications) · [Start here](#start-here) · [Try it in a minute](#try-it-in-a-minute) · [Why](#why) · [Implementations](#implementations) · [Conformance](#conformance) · [Repository map](#repository-map) · [How the specifications change](#how-the-specifications-change) · [Citing](#citing) · [Links](#links)
+
+---
+
+## Specifications
+
+Every specification is in [`spec/`](spec/), whatever its status. Each file states its own status, version and date.
+
+| Spec | Title | Status | Version | Checked by |
+|------|-------|--------|---------|------------|
+| [001](spec/NOMOS-SPEC-001.md) | Governance Artifact Protocol: rules, sealing, execution, conflict resolution | Active | 2.1.0 | [`conformance/`](conformance/) (23 checks), [`examples/`](examples/) |
+| [002](spec/NOMOS-SPEC-002.md) | Multi-Agent Governance Extension: agents manifest, guard phases, constraints DSL | Active | 1.2.0 | |
+| [003](spec/NOMOS-SPEC-003.md) | Temporal Validity and Staleness Signalling, deterministic replay | Active | 1.3.1 | |
+| [004](spec/NOMOS-SPEC-004.md) | Composable Artifacts (`extends`) and Third-Party Attestations | Active | 1.4.0 | |
+| [005](spec/NOMOS-SPEC-005.md) | Public Query Extension: keyless queries, permanent transcripts, signed statements | Draft | 1.6.0 | [`query-statement-vectors/`](query-statement-vectors/) (7) |
+| [006](spec/NOMOS-SPEC-006.md) | Artifact Revocation: detached issuer-signed statements, signed revocation list, `max_age` | Active | 1.6.0 | |
+| [007](spec/NOMOS-SPEC-007.md) | Chain-of-Trust Key Certificates: recognizing an issuer with no prior relationship and no call home | Draft | 1.7.0 | [`chain-of-trust-vectors/`](chain-of-trust-vectors/) (14 + 37 + 22, 349 mutants) |
+| [008](spec/NOMOS-SPEC-008.md) | Act Binding: one exact action bound to sealed rules, signed testimony and human consents | Draft | 0.7.0 | [`act-vectors/`](act-vectors/) (46, 1,804 mutants) |
+| [009](spec/NOMOS-SPEC-009.md) | Discovery and Submission: well-known documents, the HTTP binding, certificate presentation | Draft | 0.2.0 | [`submission-vectors/`](submission-vectors/) (17 HTTP checks, 7 selection cases) |
+| [010](spec/NOMOS-SPEC-010.md) | Signature Suites: `Ed25519`, `ES256`, `WebAuthn-ES256`; canonical keys | Draft | 0.2.0 | [`suite-vectors/`](suite-vectors/) (30) |
+| [011](spec/NOMOS-SPEC-011.md) | Tool Bindings: which tool argument is which fact a policy reads | Draft | 0.1.0 | [`binding-vectors/`](binding-vectors/) (31 parse cases, 19 calls) |
+| [012](spec/NOMOS-SPEC-012.md) | Enforcement Points: what a gateway or agent hook must do before a tool call runs | Draft | 0.1.0 | |
+| [013](spec/NOMOS-SPEC-013.md) | Authority Registries: a signed catalogue and a hash-chained public log | Draft | 0.1.0 | |
+
+Proposed amendments and revisions awaiting promotion are in [`spec/drafts/`](spec/drafts/):
+
+| Draft | Amends | What it adds |
+|-------|--------|--------------|
+| [SPEC-001 amendment 2.2.0](spec/drafts/NOMOS-SPEC-001-amendment-2.2.0.md) | 001 | Unmatched outcome, declared fact sources, consent counts |
+| [SPEC-001 amendment 2.3.0](spec/drafts/NOMOS-SPEC-001-amendment-2.3.0.md) | 001 | Equal-priority escalations naming different escalations cannot be sealed |
+| [SPEC-001 amendment 2.4.0](spec/drafts/NOMOS-SPEC-001-amendment-2.4.0.md) | 001 | Comparisons between two fields |
+| [SPEC-007 rev. 1.8.0](spec/drafts/NOMOS-SPEC-007-rev-1.8.0.md) | 007 | Statement keys (witness `claim`, approver `consent` scopes) and target-first chain resolution |
+| [SPEC-007 rev. 1.9.0](spec/drafts/NOMOS-SPEC-007-rev-1.9.0.md) | 007 | Scope-aware path selection, normative check order, `suite` and `approver` dimensions, ES256 |
+| [SPEC-007 rev. 1.10.0](spec/drafts/NOMOS-SPEC-007-rev-1.10.0.md) | 007 | Revocation a relying party can check: ES256 and certificate revocations, statements count only from a parent the root reaches, self-checkable lists, fail closed on stale knowledge |
+
+Each draft names the specification it amends, and SPEC-008 names the ones it builds on in its header. The rendered specifications are also at [nomosprotocol.com/spec](https://nomosprotocol.com/spec).
+
+---
+
+## Start here
+
+| You are | Read | Then run |
+|---------|------|----------|
+| **Building a verifier or a relying party** in any language | [`IMPLEMENTING.md`](IMPLEMENTING.md): the order to build in and the rules that are easiest to get wrong | The vector files for each step, then [`submission-vectors/run.mjs`](submission-vectors/) against your relying party |
+| **Building agents, or a service agents call** | [SPEC-008](spec/NOMOS-SPEC-008.md) §1–2, then [SPEC-009](spec/NOMOS-SPEC-009.md) | `npx @nomosprotocol/cli dev`: a complete local relying party, issuer, witness and approver |
+| **Putting a gateway or hook in front of tools** | [SPEC-011](spec/NOMOS-SPEC-011.md), [SPEC-012](spec/NOMOS-SPEC-012.md) | [`binding-vectors/`](binding-vectors/) |
+| **Writing or publishing policy as a `.nomos` artifact** | [SPEC-001](spec/NOMOS-SPEC-001.md), then the [guided tour](docs/overview.md) | `npx tsx cli/nomos.ts validate <file>` |
+| **Reviewing the design or the security argument** | [Computable Authority](https://computableauthority.com), [`papers/carried-authority/`](papers/carried-authority/) (ablation, model checks, a Lean proof of omission safety), [`SECURITY.md`](SECURITY.md) | `cd papers/carried-authority && python3 ablate.py vectors_040.json` |
+
+---
+
+## Try it in a minute
+
+Nothing below needs an account, a key of yours or a call to our servers. Once installed, the checks run offline.
+
+**Check a seal and evaluate a decision** with the reference CLI:
+
+```bash
+git clone https://github.com/nomos-spec/spec.git nomos-spec && cd nomos-spec
+npm ci
+npx tsx verify/verify.ts examples/lending_policy_v1.nomos --key deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+npx tsx cli/nomos.ts exec examples/lending_policy_v1.nomos \
+  --input '{"patron_age": 18, "account_standing": "good", "item_type": "book"}'
+```
+
+The examples are sealed with a public test key so anyone can check them. Production artifacts are sealed with Ed25519 and verified with the publisher's public key alone (`--pubkey <pem>`, or `--url <host>` to fetch it from `/.well-known/nomos-signing-keys`).
+
+**Verify Acts** with the Python reference — every published vector, with the verdict each must get:
+
+```bash
+pip install ./python
+python3 act-vectors/check.py act-vectors/vectors.json   # 48 passed: 46 vectors + 2 non-finite cases
+```
+
+**Commit a change through an Act**, as an agent and as the system that makes the change:
+
+```bash
+npx @nomosprotocol/cli dev    # a shop, a purchasing policy, a finance witness and an approving manager, all with labelled test keys
+```
+
+```ts
+import { act } from '@nomosprotocol/sdk';
+
+const r = await act({
+  to: 'http://localhost:4747',
+  action: { type: 'purchase', subject: 'DEPT-17', params: { amount: 500, vendor: 'paperco' } },
+});
+console.log(r.status, r.summary);   // committed Committed by shop.local.
+```
+
+Try `amount: 2000` (the manager must approve), `amount: 9000` (over budget) or `vendor: 'shadyco'` (blocked). The [guided tour](docs/overview.md) walks through each specification with its fields and commands.
 
 ---
 
@@ -47,390 +127,71 @@ A `.nomos` artifact now moves through four distinct moments:
 
 ---
 
-## Repository Contents
+## Implementations
 
-| Path | Description |
-|------|-------------|
-| `spec/NOMOS-SPEC-001.md` | Core protocol specification — rules, sealing, execution |
-| `spec/NOMOS-SPEC-002.md` | Multi-agent extension — agents manifest, guard phases, constraints DSL |
-| `spec/NOMOS-SPEC-003.md` | Temporal validity, staleness signalling, deterministic replay |
-| `spec/NOMOS-SPEC-004.md` | Composable artifacts (`extends`) + third-party attestations |
-| `spec/NOMOS-SPEC-005.md` | Public query extension — keyless authority queries, permanent transcripts |
-| `spec/NOMOS-SPEC-006.md` | Artifact revocation — detached issuer-signed statements, signed revocation list, `max_age` |
-| `spec/NOMOS-SPEC-007.md` | **Draft.** Chain-of-trust key certificates — recognizing an artifact's issuer with no prior relationship and no call home, with enforced delegation scope |
-| `schema/artifact.schema.json` | JSON Schema for `.nomos` artifact files |
-| `schema/rule.schema.json` | JSON Schema for a single rule object |
-| `schema/revocation-statement.schema.json` | JSON Schema for a NOMOS-SPEC-006 artifact revocation statement |
-| `schema/revocation-list.schema.json` | JSON Schema for a NOMOS-SPEC-006 revocation list |
-| `schema/key-certificate.schema.json` | JSON Schema for a NOMOS-SPEC-007 key certificate |
-| `schema/chain-verification-request.schema.json` | JSON Schema for a NOMOS-SPEC-007 `POST /verify` request |
-| `schema/chain-verification-response.schema.json` | JSON Schema for a NOMOS-SPEC-007 `POST /verify` response |
-| `schema/chain-revocation-statement.schema.json` | JSON Schema for a NOMOS-SPEC-007 chain-key revocation statement |
-| `schema/chain-revocation-list.schema.json` | JSON Schema for a NOMOS-SPEC-007 chain-key revocation list |
-| `prototype/chain-of-trust/` | NOMOS-SPEC-007's pure reference implementation — key certificates, chain verification, a CLI verifier, a minimal HTTP receiver/presenter pair |
-| `chain-of-trust-vectors/` | NOMOS-SPEC-007 interop vectors: the 1.7.0 set, the 37-case rev. 1.9 set (`vectors-1.9.json`, every case in every listed presentation order), and the rev. 1.10 revocation-source set (`revocation-vectors-1.10.json`, 22 cases, with 349 derived mutants) |
-| `suite-vectors/` | NOMOS-SPEC-010 signature-suite vectors (30), and an independent Node verifier |
-| `python/nomosprotocol/` | The Python reference, shared by every reference verifier here (JCS, NOMOS-SPEC-010 suites, NOMOS-SPEC-007 chain resolution and revocation sources, the NOMOS-SPEC-008 Act verifier, NOMOS-SPEC-011 tool bindings) and published as the `nomosprotocol` package, with `accept()`, `act()`, `witness()` and `issuer()` for NOMOS-SPEC-009 (`pip install nomosprotocol`) |
-| `spec/drafts/NOMOS-SPEC-008.md` | **Draft.** Act Binding (0.6.0) — an action bound to sealed rules, signed testimony and human consents, verified by the relying party that would commit it |
-| `spec/drafts/NOMOS-SPEC-009.md` | **Draft.** Discovery and Submission (0.2.0) — relying-party, issuer and witness documents (hints, never inputs), statement and approval requests, the HTTP submission binding, and which certificates an Act presents |
-| `spec/drafts/NOMOS-SPEC-010.md` | **Draft.** Signature Suites (0.2.0) — the closed registry: `Ed25519`, `ES256`, `WebAuthn-ES256` |
-| `spec/drafts/NOMOS-SPEC-011.md` | **Draft.** Tool Bindings (0.1.0) — a reviewed file saying which tool argument is which fact a policy reads: no constants, only bound facts reach the policy, nothing guessed |
-| `spec/drafts/NOMOS-SPEC-012.md` | **Draft.** Enforcement Points (0.1.0) — what a gateway or agent hook must do: fail closed, strictest policy wins, approvals bound to one exact call and used once, never the agent host's own prompt, and what it records |
-| `spec/drafts/NOMOS-SPEC-013.md` | **Draft.** Authority Registries (0.1.0) — a signed, mirrorable catalogue; a hash-chained public log of listings, withdrawals, attestations and revocations with a signed head; standing (compiled / published / issued, never inferred) apart from evidence (what the open verifier can evaluate); declared callers, test traffic kept out of public counts, organisations private by default; finding and requesting authorities |
-| `binding-vectors/` | NOMOS-SPEC-011 vectors (31 files, 19 calls), computed by the TypeScript implementation and checked by the Python reference (`check.py`) |
-| `.claude-plugin/marketplace.json` | The Claude Code plugin marketplace: `claude plugin install nomos --marketplace nomos-spec/spec` installs `nomos-guard`'s agent hook (NOMOS-SPEC-012) from npm |
-| `spec/drafts/NOMOS-SPEC-007-rev-1.10.0.md` | **Draft revision.** SPEC-007 1.10.0 — revocation a relying party can check: ES256 and certificate revocations, statements count only from a parent the root reaches, self-checkable lists, fail closed on stale knowledge |
-| `spec/drafts/NOMOS-SPEC-007-rev-1.9.0.md` | **Draft revision.** SPEC-007 1.9.0 — scope-aware path selection, normative check order, `suite` and `approver` dimensions, ES256 |
-| `spec/drafts/NOMOS-SPEC-007-rev-1.8.0.md` | **Draft revision.** SPEC-007 1.8.0 — statement keys (witness `claim`, approver `consent` scopes) and target-first chain resolution |
-| `spec/drafts/NOMOS-SPEC-001-amendment-2.3.0.md` | **Draft amendment.** SPEC-001 2.3.0 — equal-priority escalations naming different escalations cannot be sealed |
-| `spec/drafts/NOMOS-SPEC-001-amendment-2.2.0.md` | **Draft amendment.** SPEC-001 2.2.0 — unmatched outcome, declared fact sources, consent counts |
-| `act-vectors/` | NOMOS-SPEC-008 0.6.0 reference verifier (`act_verify.py`), deterministic generator, 43 test vectors and 1,693 derived mutants with reference verdicts |
-| `submission-vectors/` | NOMOS-SPEC-009 conformance: the status table, a test profile, an HTTP runner for relying parties (`run.mjs`, 17 checks, any language), a reference relying party, and the certificate-selection vectors for carriers (`selection.json`, 7 cases) |
-| `schema/nomos-relying-party.schema.json`, `nomos-issuer.schema.json`, `nomos-witness.schema.json` | JSON Schemas for the NOMOS-SPEC-009 discovery documents |
-| `examples/lending_policy_v1.nomos` | Example — public lending policy |
-| `examples/healthcare_triage_v1.nomos` | Example — clinical triage protocol |
-| `examples/minimal_v1.nomos` | Minimal valid artifact (structure check only) |
-| `cli/nomos.ts` | NOMOS CLI — validate, verify, exec, diff, lint |
-| `verify/verify.py` | Reference verifier (Python) |
-| `verify/verify.ts` | Reference verifier (TypeScript/Node) |
+| Implementation | Language | Covers | Checked against |
+|----------------|----------|--------|-----------------|
+| [`python/nomosprotocol/`](python/) — [`nomosprotocol` on PyPI](https://pypi.org/project/nomosprotocol/) | Python | JCS, SPEC-010 suites, SPEC-007 chains and revocation sources, the SPEC-008 Act verifier, SPEC-011 bindings; `accept()`, `act()`, `witness()`, `issuer()` for SPEC-009 | Every vector file here; generates the mutant sets |
+| [`prototype/chain-of-trust/`](prototype/chain-of-trust/) | TypeScript | SPEC-007 key certificates and chain verification, a CLI verifier, an HTTP receiver/presenter pair | SPEC-007 1.7.0 (14) and rev. 1.9 (37) vectors, SPEC-010 (30) |
+| [`suite-vectors/check.mjs`](suite-vectors/) | JavaScript, Node built-ins only | SPEC-010 suites, written separately from the Python reference | SPEC-010 (30) |
+| [`submission-vectors/reference-rp.mjs`](submission-vectors/) | JavaScript | A SPEC-009 relying party | `run.mjs` (17) |
+| [`verify/`](verify/), [`cli/`](cli/) | TypeScript, Python | Seal verification (SPEC-001 §8, SPEC-006 revocations); validate, exec, diff, lint | [`examples/`](examples/), [`conformance/`](conformance/) |
+| [`@nomosprotocol/verify`](https://www.npmjs.com/package/@nomosprotocol/verify) | TypeScript, any runtime | SPEC-007 to 010 verification | Every SPEC-007, 008 and 010 vector; agrees with the Python reference on all 1,804 SPEC-008 mutants and 349 revocation mutants |
+| [`@nomosprotocol/sdk`](https://www.npmjs.com/package/@nomosprotocol/sdk), [`@nomosprotocol/cli`](https://www.npmjs.com/package/@nomosprotocol/cli) | TypeScript | `act()`, `accept()`, `issuer()`, `witness()`, `approver()`; `nomos dev` | SPEC-009 `run.mjs` (17) |
+| [`nomos-guard`](https://www.npmjs.com/package/nomos-guard) | TypeScript | A SPEC-012 enforcement point for MCP servers and agent hooks, reading SPEC-011 bindings | |
+
+Every implementation listed is by the authors. SPEC-007 to 013 stay Drafts until an independent implementation reproduces their verdicts from the text; [`IMPLEMENTING.md`](IMPLEMENTING.md) is written for that. If you build one, open an issue or email allan@nomosprotocol.com, and it will be listed here.
 
 ---
 
-## Quickstart
+## Conformance
 
-### TypeScript SDK (fastest path)
+The workflow in [`.github/workflows/validate.yml`](.github/workflows/validate.yml) runs on every pull request. It checks every published vector file with every implementation in this repository that claims it, requires every generator to reproduce its committed file byte for byte, runs the SPEC-009 runner against the reference relying party, and checks every relative link and heading anchor in the Markdown. To run the same checks locally:
 
 ```bash
-npm install @nomosprotocol/sdk
+npm ci && pip install jsonschema ./python
+node scripts/check-links.mjs
+npx tsx conformance/run.ts                                            # SPEC-001: 23 checks
+node query-statement-vectors/check.mjs                                # SPEC-005: 7
+python3 chain-of-trust-vectors/python/check_19.py chain-of-trust-vectors/vectors-1.9.json                    # SPEC-007: 37
+python3 chain-of-trust-vectors/python/check_revocations.py chain-of-trust-vectors/revocation-vectors-1.10.json # SPEC-007: 22
+python3 act-vectors/check.py act-vectors/vectors.json                 # SPEC-008: 48
+python3 suite-vectors/check.py suite-vectors/vectors.json             # SPEC-010: 30
+python3 binding-vectors/check.py binding-vectors/vectors.json         # SPEC-011: 50
+(cd submission-vectors && npm install && node selection.mjs --check)  # SPEC-009: 7
 ```
-
-```typescript
-import { Nomos } from '@nomosprotocol/sdk';
-
-const nomos = new Nomos('nms_live_...');
-
-const result = await nomos.decisions.verify({
-  artifact_id:      'loan_approval_v1',
-  decision_context: { credit_score: 720, loan_amount: 50_000 },
-});
-
-result.allowed            // true | false
-result.verdict            // 'auto_approved' | 'auto_rejected' | 'escalated'
-result.audit_record       // SHA-256 — store for compliance
-```
-
-Zero dependencies. Auto-retry. Full TypeScript types. Node ≥18.
 
 ---
 
-### Install the CLI
+## Repository map
 
-```bash
-git clone https://github.com/nomos-spec/spec.git nomos-spec
-cd nomos-spec
-npm install
-```
-
-### Validate structure
-
-```bash
-npx tsx cli/nomos.ts validate examples/lending_policy_v1.nomos
-```
-
-### Verify cryptographic seal
-
-Production artifacts are sealed with **Ed25519** and are **publicly verifiable** — anyone checks the seal offline with the published public key, no secret and no call to the sealing authority:
-
-```bash
-# Fetch the public key once from /.well-known/nomos-signing-keys, then verify locally:
-npx tsx verify/verify.ts <artifact.nomos> --url https://nomosprotocol.com
-# …or fully offline with a pinned public key:
-npx tsx verify/verify.ts <artifact.nomos> --pubkey signing_key.pub.pem
-```
-
-The verifier runs two independent, offline checks: **integrity** (recompute the JCS/SHA-256 hash) and **authenticity** (verify the Ed25519 signature against the public key for the seal's `kid`). Tampering the artifact fails the hash check; a forged or wrong-key signature fails authenticity. See §8 of NOMOS-SPEC-001.
-
-> **Legacy:** The bundled `examples/` are older HMAC-SHA256 test artifacts (symmetric — not third-party verifiable), sealed with the public test key `deadbeef…`. Verify them with `--key deadbeef…`. HMAC is retained for backward compatibility only; new seals SHOULD be Ed25519.
-
-### Execute a decision locally
-
-```bash
-npx tsx cli/nomos.ts exec examples/lending_policy_v1.nomos \
-  --input '{"patron_age": 18, "account_standing": "good", "item_type": "book"}'
-```
-
-### Diff two artifact versions
-
-```bash
-npx tsx cli/nomos.ts diff examples/lending_policy_v1.nomos examples/lending_policy_v2.nomos
-```
-
-### Lint for quality warnings
-
-```bash
-npx tsx cli/nomos.ts lint examples/lending_policy_v1.nomos
-```
-
-### Evaluate a decision via the hosted runtime
-
-```bash
-curl -X POST https://nomosprotocol.com/api/nomos/execute \
-  -H "x-api-key: <key>" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "artifactId": "lending_policy_v1",
-    "context": {
-      "patron_age": 18,
-      "account_standing": "good",
-      "item_type": "reference"
-    }
-  }'
-```
-
-### Verify an artifact (Python)
-
-```bash
-# Ed25519 (production) — verify with the published public key, offline:
-python verify/verify.py <artifact.nomos> --url https://nomosprotocol.com   # or --pubkey key.pem
-# Legacy HMAC example artifacts:
-python verify/verify.py examples/lending_policy_v1.nomos \
-  --key deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
-```
-
-(Ed25519 verification needs `pip install cryptography`; the Node verifier `verify/verify.ts` is zero-dependency.)
+| Path | What it holds |
+|------|---------------|
+| [`spec/`](spec/) | The thirteen specifications; [`spec/drafts/`](spec/drafts/) holds proposed amendments and revisions |
+| [`schema/`](schema/) | JSON Schemas: the artifact and its rules, execution and public-query requests and responses, revocation statements and lists, key certificates and chain verification, SPEC-009 discovery documents, freshness staples |
+| `*-vectors/` | Test vectors, each folder with its generator, its checker and a README saying what to compute: [`act-vectors/`](act-vectors/), [`binding-vectors/`](binding-vectors/), [`chain-of-trust-vectors/`](chain-of-trust-vectors/), [`query-statement-vectors/`](query-statement-vectors/), [`submission-vectors/`](submission-vectors/), [`suite-vectors/`](suite-vectors/) |
+| [`conformance/`](conformance/) | SPEC-001 §9 runtime and producer requirements as runnable checks |
+| [`python/`](python/), [`prototype/`](prototype/) | The Python reference and the SPEC-007 TypeScript prototype |
+| [`cli/`](cli/), [`verify/`](verify/) | The reference CLI and seal verifiers |
+| [`examples/`](examples/) | Example artifacts sealed with the public test key; [`scripts/seal-example.mjs`](scripts/seal-example.mjs) re-seals one after a change |
+| [`docs/overview.md`](docs/overview.md) | A guided tour: each specification's fields and commands |
+| [`papers/`](papers/) | Evidence for the published papers: ablations, model checks, a Lean 4 proof |
+| [`proposals/`](proposals/) | RFCs that led to specifications |
+| [`.claude-plugin/`](.claude-plugin/) | The Claude Code plugin marketplace: `claude plugin install nomos --marketplace nomos-spec/spec` installs `nomos-guard`'s agent hook (SPEC-012) |
 
 ---
 
-## Confidence Tiers
+## How the specifications change
 
-| Tier | ARI gate | Meaning |
-|------|----------|---------|
-| `DECLARED` | none | Rules extracted from policy documents only — no behavioral data required |
-| `VALIDATED` | none | Rules triangulated against behavioral decision logs |
-| `CERTIFIED` | none | Statistical validation passed; contradiction-free |
-| `PROVEN` | ≥ 0.60 | ARI ≥ 60 confirmed; eligible for Exchange listing |
-| `SOVEREIGN` | ≥ 0.75 | Highest tier; ARI ≥ 75, admin-verified, autonomous band confirmed |
+Each specification is a **Draft** or **Active**, as its own header states. NOMOS-SPEC-007 onward stay Drafts until an independent implementation passes their vectors ([SPEC-007 §8](spec/NOMOS-SPEC-007.md#8-conformance-and-implementation-status), SPEC-008 §10). Within a specification, compatible changes raise the minor version; larger ones may be proposed first as an amendment or revision in [`spec/drafts/`](spec/drafts/). A backward-incompatible change to an Active specification takes a new specification number ([`DEPRECATION.md`](DEPRECATION.md)). Every change is recorded in [`CHANGELOG.md`](CHANGELOG.md).
+
+To propose a change, report an ambiguity or contribute an implementation, see [`CONTRIBUTING.md`](CONTRIBUTING.md). Security issues: [`SECURITY.md`](SECURITY.md). Conduct: [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md).
 
 ---
 
-## Multi-Agent Governance (SPEC-002)
+## Citing
 
-NOMOS-SPEC-002 extends the artifact format with an optional `agents` manifest. This lets you embed agent authority and constraints directly inside the sealed artifact — so a runtime can enforce them without any external policy store.
-
-```json
-"agents": {
-  "manifest_version": "1.0",
-  "agents": [
-    {
-      "agent_id": "loan-review-agent",
-      "display_name": "Loan Review Agent",
-      "permissions": ["READ_RULES", "EVALUATE"],
-      "cannot_call": ["SEAL", "MODIFY_RULES"],
-      "constraints": [
-        { "field": "risk_score", "operator": "lt", "value": 0.6 },
-        { "field": "jurisdiction", "operator": "eq", "value": "US" }
-      ],
-      "audit_level": "full"
-    }
-  ]
-}
-```
-
-### Constraints DSL
-
-The `constraints` array is evaluated by the guard before rule evaluation (Phase 5). Each constraint specifies a field from the incoming request, an operator, and a threshold.
-
-| Operator | Meaning |
-|----------|---------|
-| `lt` | less than |
-| `lte` | at most (≤) |
-| `gt` | greater than |
-| `gte` | at least (≥) |
-| `eq` | equals (any type) |
-| `neq` | not equal (any type) |
-
-Semantics:
-- **Missing field** → skip (partial payloads don't fail)
-- **Type mismatch** on numeric operators → skip
-- **Violation in enforce mode** → `block`
-- **Violation in advisory mode** → `escalate`
-
-See `spec/NOMOS-SPEC-002.md §5.6` for the full specification.
-
----
-
-## Seal Integrity
-
-Every `.nomos` artifact carries a `seal` block. Ed25519 is the default, publicly verifiable form:
-
-```json
-"seal": {
-  "status": "sealed",
-  "canonicalization": "JCS",
-  "signature_algorithm": "Ed25519",
-  "kid": "<public-key-id>",
-  "hash": "<sha256-of-canonical-payload>",
-  "signed_by": { "name": "...", "org_id": "...", "role": "...", "timestamp": "..." },
-  "signature": "<base64-ed25519-signature>"
-}
-```
-
-The seal is computed over the artifact body canonicalized per [RFC 8785 (JCS)](https://www.rfc-editor.org/rfc/rfc8785), excluding the `seal` and `attestations` fields themselves. Any modification to any other field — including whitespace — produces a different hash and invalidates the signature. Verify offline with the publisher's public key at `/.well-known/nomos-signing-keys` — no secret required. Legacy `HMAC-SHA256` seals (symmetric, verifiable only by the issuer) remain valid but are not third-party verifiable.
-
-See `spec/NOMOS-SPEC-001.md §8` for the full sealing procedure.
-
----
-
-## Temporal Validity & Staleness (SPEC-003)
-
-NOMOS-SPEC-003 lets a rule declare the window during which it's actually in force, and gives a runtime a way to say "this artifact hasn't been re-validated in a while" without blocking anything.
-
-```json
-{
-  "id": "cross_border_threshold",
-  "valid_from": "2026-01-01T00:00:00Z",
-  "valid_until": "2026-12-31T23:59:59Z",
-  "when": "...",
-  "then": [ ... ]
-}
-```
-
-A rule outside its window is skipped and traced in the audit record as `expired` — it's never silently ignored. Execution requests can also supply `execution_at`, replaying a decision as if it were evaluated at that historical instant — the same sealed artifact and inputs always produce the same verdict for a given point in time.
-
-When an artifact has accumulated enough executions since it was last triangulated against real behavioral data, the runtime response carries a `staleness_advisory` — informational only, never a block:
-
-```json
-"staleness_advisory": {
-  "triangulated_at": "2026-05-30T09:41:00Z",
-  "decisions_since_triangulation": 503,
-  "threshold": 500,
-  "recommendation": "consider_retriangulation"
-}
-```
-
-See `spec/NOMOS-SPEC-003.md` for the full specification.
-
----
-
-## Composition & Attestation (SPEC-004)
-
-NOMOS-SPEC-004 adds two independent capabilities: building an artifact from a shared base, and letting a third party co-sign one.
-
-**Composition.** A child artifact declares `extends` and carries only its overlay — the rules it overrides, adds, or removes on top of a base:
-
-```json
-{
-  "extends": { "artifact_id": "base_policy", "version": "2.0.0", "seal_hash": "..." },
-  "overlay": {
-    "decisions": [ { "id": "min_experience", "when": "...", "then": [ ... ] } ],
-    "removed": ["some_base_rule_id"]
-  }
-}
-```
-
-Base and overlay resolve into one self-contained sealed artifact at build time — a runtime never needs the base to evaluate the child. When the base is updated, each child can re-compose against the new version with its overlay re-applied, so a shared rule changes once and propagates everywhere.
-
-**Attestation.** A party other than the issuer signs a sealed version with their own key, over its seal hash:
-
-```json
-"attestations": [
-  {
-    "attester": { "name": "...", "org_id": "...", "role": "regulator" },
-    "statement": "Reviewed and approved for AY2026",
-    "artifact_hash": "<must equal seal.hash>",
-    "algorithm": "Ed25519",
-    "kid": "...",
-    "signature": "...",
-    "attested_at": "..."
-  }
-]
-```
-
-An attestation binds to one exact version — its `artifact_hash` must match the artifact's `seal.hash`, so it can't be replayed onto a different version — and is excluded from the seal-hash computation, so adding or revoking one never invalidates the seal.
-
-See `spec/NOMOS-SPEC-004.md` for the full specification.
-
----
-
-## Chain of Trust & Act Binding (SPEC-007, SPEC-008)
-
-Together these answer the question a service asks when an agent arrives acting for an organisation: *on whose authority, to do what, and can I check it myself?*
-
-**SPEC-007 — recognizing the issuer.** A key certificate lets one key certify another to sign, within a scope, until an expiry. A verifier pins its own root and resolves the chain offline — no prior relationship with the issuer, no call home. Revision 1.8.0 (draft) extends the same certificates to the keys that state facts (`claim` scope, for witnesses such as a credit bureau) and the keys that approve (`consent` scope, for human approvers), and resolves chains target-first so the verdict never depends on the order certificates are presented in. Revision 1.9.0 makes path selection scope-aware, fixes the order of the per-certificate checks so two verifiers report the same failure, admits ES256 and P-256 keys (SPEC-010), and adds the `suite` and `approver` dimensions, so a passkey can approve and do nothing else and consents are counted by person.
-
-**SPEC-008 — binding the action.** A verdict computed over caller-supplied facts is advice; nothing ties it to the change made later. An Act closes five gaps an agent could otherwise exploit without breaking any cryptography:
-
-| Gap | How the Act closes it |
-|-----|-----------------------|
-| Skipping the check | The relying party — the system that would make the change — demands and verifies the Act itself |
-| Lying to the check | Each fact comes from the channel its input declares: the action, the relying party's own state, or signed testimony from a witness whose key is certified for that claim — and has the type its input declares, so a wrong-typed value cannot make a deny rule fall silent |
-| Changing the action after the check | Consents are signed over the Act's binding digest; a changed amount invalidates them |
-| Presenting yesterday's rules | The relying party establishes the version in force at verification time; a superseded or revoked authority cannot authorize a new action |
-| Withholding a fact | Evaluation is three-valued: a missing fact is undecided, never false, and the verdict is `INCOMPLETE` while an outranking block or escalate rule is undecided; `exists()` treats absence as decided only for the action and the relying party's own state |
-
-An agent is free to bypass every NOMOS component. Its act still cannot take effect, because the only system able to make the change is the one that demands the proof.
-
-```bash
-cd act-vectors
-pip install cryptography
-python3 check.py vectors.json        # 45 passed: 43 vectors + 2 non-finite cases
-```
-
-See `spec/drafts/NOMOS-SPEC-008.md` for the full specification and `act-vectors/README.md` for every case.
-
-**SPEC-009 — finding the relying party and handing it the Act.** A relying party, an issuer and a witness each publish a document at a well-known path. The documents are hints: a carrier uses them to plan and gather, and the relying party evaluates the Act alone, so a false document can make an Act fail, never succeed. Testimony and approvals are requested over two small HTTP exchanges, and an Act is submitted as `application/nomos-act+json`; each verdict comes back as one status (201 AUTHORIZED with the receipt, 202 ESCALATED, 422 INCOMPLETE, 403 DENIED, 409 REPLAYED with the stored receipt, 400 any other refusal). The nonce is the idempotency key, and an escalated Act is resubmitted unchanged with the consents added.
-
-```bash
-cd submission-vectors && npm install
-node run.mjs https://your-relying-party.example   # 17 checks; configure the relying party with profile.json
-```
-
-**SPEC-010 — signature suites.** One closed registry for every NOMOS verifier: `Ed25519`, `ES256` (P1363, low-S) and `WebAuthn-ES256` (consents only, user-verified), with canonical keys fixed byte for byte. It exists so the keys that confer authority can stay in KMS, HSM and passkey custody.
-
----
-
-## Versioning
-
-This repository tracks the NOMOS artifact format specification. Backward-incompatible changes to a published spec require a new spec number ([DEPRECATION.md](DEPRECATION.md)); new capabilities are published as new numbered extensions. Every artifact carries a fixed `nomos_version` (currently `"1.0.0"`) identifying the base container format (NOMOS-SPEC-001 §3.2); extensions like NOMOS-SPEC-002's `agents` manifest are detected structurally, by the presence of their own field, not by a separate per-extension version marker.
-
-| Spec | Status | Summary |
-|------|--------|---------|
-| NOMOS-SPEC-001 | Active | Core rules, sealing, execution, conflict resolution |
-| NOMOS-SPEC-002 | Active | Multi-agent manifest, guard phases, constraints DSL |
-| NOMOS-SPEC-003 | Active | Temporal validity, staleness signalling, deterministic replay |
-| NOMOS-SPEC-004 | Active | Composable artifacts (`extends`), third-party attestations |
-| NOMOS-SPEC-005 | Draft | Public query extension — keyless authority queries, permanent transcripts |
-| NOMOS-SPEC-006 | Active | Artifact revocation — detached issuer-signed statements, signed revocation list |
-| NOMOS-SPEC-007 | Draft | Chain-of-trust key certificates — an independent system recognizing an artifact's issuer with no prior relationship and no call home, with enforced delegation scope |
-| NOMOS-SPEC-008 | Draft | Act Binding — an exact action bound to sealed rules, signed testimony and human consents; verified by the relying party; three-valued evaluation with an `INCOMPLETE` verdict |
-| NOMOS-SPEC-009 | Draft | Discovery and Submission — well-known documents as hints, statement and approval requests, the HTTP submission binding with one status per verdict |
-| NOMOS-SPEC-010 | Draft | Signature Suites — `Ed25519`, `ES256`, `WebAuthn-ES256`; canonical keys; one closed registry |
-
-Proposed revisions awaiting promotion live in [`spec/drafts/`](spec/drafts/): NOMOS-SPEC-001 amendments 2.2.0 and 2.3.0, and NOMOS-SPEC-007 revisions 1.8.0 and 1.9.0, all required by NOMOS-SPEC-008 0.6.0.
-
-NOMOS-SPEC-007 through 010 are built and running.
-
-- **SPEC-007 rev. 1.9:** the Python reference (`python/nomosprotocol/chain.py`), the TypeScript prototype
-  in [`prototype/chain-of-trust/`](prototype/chain-of-trust/) and `@nomosprotocol/verify`, which
-  the hosted platform runs, pass all 37 cases in
-  [`chain-of-trust-vectors/vectors-1.9.json`](chain-of-trust-vectors/) in every listed order.
-- **SPEC-008 0.6.0:** the Python reference verifier in [`act-vectors/`](act-vectors/) and
-  `@nomosprotocol/verify` pass all 43 vectors and agree on all 1,693 mutants. The platform's
-  budget ledger accepts a verified Act as the authority for a reservation.
-- **SPEC-009:** the reference relying party in [`submission-vectors/`](submission-vectors/)
-  and the SDK's `accept()`, written separately on the same verifier, pass all 17 checks of
-  `run.mjs`. `npx @nomosprotocol/cli dev` runs a complete local relying party, issuer, witness and
-  approver.
-- **SPEC-010:** the Python reference, an independent Node verifier, the SPEC-007 prototype and
-  `@nomosprotocol/verify` pass all 30 suite vectors.
-
-All are published as Drafts because a standard is promoted on independent implementation —
-[§8 of SPEC-007](spec/NOMOS-SPEC-007.md#8-conformance-and-implementation-status) and §10 of
-SPEC-008 set out the conformance requirements.
-
-**Second-party implementations are invited.** [`IMPLEMENTING.md`](IMPLEMENTING.md) gives the order to build in, every vector file and runner to check against, and the rules that are easiest to get wrong. If you build agents or the services they call,
-implement any of SPEC-007 to SPEC-010 against the vectors and open an issue, or email
-allan@nomosprotocol.com.
+[`CITATION.cff`](CITATION.cff) gives the citation; GitHub shows it under "Cite this repository". Cite a specification by number and version, for example *NOMOS-SPEC-008 0.7.0*.
 
 ---
 

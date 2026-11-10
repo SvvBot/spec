@@ -17,11 +17,18 @@ useful, and only a relying party needs steps 5 and 6.
 | Step | Build | Specification | Check it with |
 |---|---|---|---|
 | 1 | Canonical JSON (RFC 8785) | NOMOS-SPEC-001 §8.1 | The seal hashes in every vector file: if a hash you compute differs, start here. ECMAScript number output matters: `4.0` is `4`, `1e-7` is `1e-7`. |
-| 2 | Signature suites: Ed25519, ES256 (P1363, low-S), WebAuthn-ES256; canonical keys | `spec/drafts/NOMOS-SPEC-010.md` | `suite-vectors/vectors.json` (30). Small-order Ed25519 keys must be refused at load. |
+| 2 | Signature suites: Ed25519, ES256 (P1363, low-S), WebAuthn-ES256; canonical keys | `spec/NOMOS-SPEC-010.md` | `suite-vectors/vectors.json` (30). Small-order Ed25519 keys must be refused at load. |
 | 3 | Key certificates and chain resolution: target-first, scope-aware, the per-certificate check order | `spec/NOMOS-SPEC-007.md`, `spec/drafts/NOMOS-SPEC-007-rev-1.8.0.md`, `spec/drafts/NOMOS-SPEC-007-rev-1.9.0.md` | `chain-of-trust-vectors/vectors.json` (1.7.0), then `vectors-1.9.json` (37 cases, each in every listed presentation order) |
 | 4 | Revocation sources: statements, the authority rule, lists, `as_of` | `spec/drafts/NOMOS-SPEC-007-rev-1.10.0.md` | `chain-of-trust-vectors/revocation-vectors-1.10.json` (22), then agreement on `revocation-mutants-1.10.json` (349) |
-| 5 | The Act verifier: envelope, chain, currency, testimony, fact channels and types, three-valued evaluation, consents counted by person | `spec/drafts/NOMOS-SPEC-008.md` (with `NOMOS-SPEC-001-amendment-2.2.0.md` and `-2.3.0.md`) | `act-vectors/vectors.json` (43 plus two non-finite cases built in memory), then agreement on `act-vectors/mutants.json` (1,693) |
-| 6 | Discovery, certificate presentation and the HTTP binding | `spec/drafts/NOMOS-SPEC-009.md` | `submission-vectors/selection.json` (7) for a carrier; `submission-vectors/run.mjs` (17 checks over HTTP) for a relying party |
+| 5 | The Act verifier: envelope, chain, currency, testimony, fact channels and types, three-valued evaluation, consents counted by person | `spec/NOMOS-SPEC-008.md` (with `NOMOS-SPEC-001-amendment-2.2.0.md`, `-2.3.0.md` and `-2.4.0.md`) | `act-vectors/vectors.json` (46 plus two non-finite cases built in memory), then agreement on `act-vectors/mutants.json` (1,804) |
+| 6 | Discovery, certificate presentation and the HTTP binding | `spec/NOMOS-SPEC-009.md` | `submission-vectors/selection.json` (7) for a carrier; `submission-vectors/run.mjs` (17 checks over HTTP) for a relying party |
+
+Two parts stand apart from that order and need only step 1 (and step 2 for signatures):
+
+| Build | Specification | Check it with |
+|---|---|---|
+| Signed query statements: a transcript a holder can check without trusting the runtime | `spec/NOMOS-SPEC-005.md` §2.4 | `query-statement-vectors/vectors.json` (7), with the dependency-free `check.mjs` |
+| Tool bindings: which tool argument is which fact a policy reads | `spec/NOMOS-SPEC-011.md` | `binding-vectors/vectors.json` (31 parse cases, 19 calls) |
 
 ## Running the checks against your implementation
 

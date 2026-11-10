@@ -74,7 +74,7 @@ purpose. Never use them as trust material.**
 | record_only_with_a_record | AUTHORIZED | Under `record`, the relying party's own record establishes currency |
 | two_field_rule_names_only_the_absent_fact | INCOMPLETE | `amount > approved_limit` with only `approved_limit` missing names `approved_limit`, not `amount` |
 
-`mutants.py` derives 1,693 mutants of the 43 vectors and records the reference verdict for each, in
+`mutants.py` derives 1,804 mutants of the 46 vectors and records the reference verdict for each, in
 `mutants.json`. Each mutant is one small change an attacker or a faulty presenter could make:
 - a dropped, tampered or relabelled statement;
 - a dropped or duplicated consent;
@@ -88,6 +88,6 @@ purpose. Never use them as trust material.**
 A second implementation re-derives them from the recipe and must reproduce every verdict field for
 field.
 
-All 43 cases pass in `act_verify.py` here and in `@nomosprotocol/verify`, the TypeScript verifier the
-NOMOS platform and SDK use, and the two agree on every field of all 1,693 mutants. Both are by the authors. Second-party implementations are invited — run `check.py`'s cases against
+All 46 cases pass in `act_verify.py` here and in `@nomosprotocol/verify`, the TypeScript verifier the
+NOMOS platform and SDK use, and the two agree on every field of all 1,804 mutants. Both are by the authors. Second-party implementations are invited — run `check.py`'s cases against
 yours and open an issue with the result.

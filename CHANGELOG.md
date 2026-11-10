@@ -7,6 +7,23 @@ Spec versions follow [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [Repository] — 2026-11-10 (Every specification in one folder; every vector checked on every change)
+
+No specification text changes in this entry.
+
+### Changed
+- **All thirteen specifications are in `spec/`**, whatever their status. NOMOS-SPEC-008 to 013 moved from `spec/drafts/`; each old path keeps a short pointer to the new one, so existing links still lead somewhere. `spec/drafts/` now holds only proposed amendments (SPEC-001 2.2.0, 2.3.0, 2.4.0) and revisions (SPEC-007 1.8.0, 1.9.0, 1.10.0). `spec/README.md` indexes them.
+- **README rebuilt around one specification table** (title, status, version, the vectors that check it), a start-here table by reader, a one-minute offline try, the implementations and what each passes, and the conformance commands. The per-specification walkthroughs moved, unchanged apart from corrected counts, to `docs/overview.md`. The SDK example now starts from `act()` and `npx @nomosprotocol/cli dev`, the published SDK's starting point for Acts. The confidence-tier table now matches NOMOS-SPEC-001 §5 (`compiled` / `proven` / `sovereign`); the previous one listed registry listing gates as if they were protocol tiers.
+- **Counts corrected from real runs:** NOMOS-SPEC-008 0.7.0 has 46 vectors (48 checks with the two non-finite cases) and 1,804 derived mutants, on which the Python reference and `@nomosprotocol/verify` agree; README, IMPLEMENTING.md and `act-vectors/README.md` said 43 and 1,693.
+- **CI checks everything published.** Added: SPEC-007 rev. 1.9 and rev. 1.10 vectors (Python and the TypeScript prototype), SPEC-010 vectors (Python, the independent Node verifier, the prototype), SPEC-005 signed query statements, SPEC-009 certificate selection and the 17-check runner against the reference relying party, the SPEC-001 conformance suite, example seals verified with the test key by both verifiers, every generator reproducing its committed vector or mutant file byte for byte, every relative link and heading anchor resolving, and both spec indexes agreeing with each specification's own Status and Version.
+- **CONTRIBUTING:** what Draft and Active mean (NOMOS-SPEC-007 onward stay Drafts until an independent implementation passes their vectors), and a re-seal step that works: `scripts/seal-example.mjs` (the documented `verify.py --key` command only verifies).
+
+### Added
+- `CODE_OF_CONDUCT.md` (Contributor Covenant 2.1), `CITATION.cff`, a pull-request template, issue-template contact links (implementation reports, questions, security), `scripts/check-links.mjs`, `scripts/check-spec-index.mjs`, `scripts/seal-example.mjs`.
+
+### Removed
+- `python/python`, a symbolic link committed by mistake that pointed at a path on one author's machine.
+
 ## [NOMOS-SPEC-005 1.6.0, Draft] — 2026-11-10 (A transcript you can rely on without trusting the runtime)
 
 ### Added

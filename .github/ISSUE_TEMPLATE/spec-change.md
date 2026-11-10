@@ -1,6 +1,6 @@
 ---
 name: Spec Change Request
-about: Propose a change or addition to a NOMOS specification (001–008)
+about: Propose a change or addition to a NOMOS specification (001–013)
 title: "[SPEC] "
 labels: spec-change
 assignees: ''

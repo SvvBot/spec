@@ -7,7 +7,7 @@
 | NOMOS-SPEC-001 (2.x) | Yes |
 | NOMOS-SPEC-002 – 006 | Yes |
 | NOMOS-SPEC-007 (Draft) | Yes — reports welcome; Draft text may change in response |
-| NOMOS-SPEC-008 (Draft) | Yes — reports welcome; Draft text may change in response |
+| NOMOS-SPEC-008 – 013 (Draft) | Yes — reports welcome; Draft text may change in response |
 
 ## Reporting a Vulnerability
 
