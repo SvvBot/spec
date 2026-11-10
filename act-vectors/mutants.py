@@ -47,5 +47,5 @@ for c in out:
                    revoked_artifacts=set(c["revoked_artifacts"]), currency_policy=c["currency_policy"])
     c["expected"] = {k: x for k, x in r.items() if k != "detail"}
     del c["act"]                      # the recipe regenerates it; the file stays small
-json.dump({"_readme": __doc__.strip(), "spec": "NOMOS-SPEC-008 0.6.0", "count": len(out), "cases": out}, sys.stdout, indent=1, sort_keys=True)
+json.dump({"_readme": __doc__.strip(), "spec": v["spec"], "count": len(out), "cases": out}, sys.stdout, indent=1, sort_keys=True)
 sys.stdout.write("\n")
