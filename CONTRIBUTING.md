@@ -41,12 +41,12 @@ implementation work begins.
 
 | Status | Meaning |
 |--------|---------|
-| **Draft** | Published for implementation and review. May change in response to implementers; every change is versioned and recorded in `CHANGELOG.md`. |
-| **Active** | An independent implementation (not by the authors) passes the specification's vectors. Changes after this are backward compatible, or take a new specification number. |
+| **Draft** | Published for implementation and review. May change in response to implementers; every change is versioned and recorded in `CHANGELOG.md`. NOMOS-SPEC-007 onward stay Drafts until an independent implementation (not by the authors) passes their vectors (SPEC-007 §8, SPEC-008 §10). |
+| **Active** | Stable. Changes are backward compatible, or take a new specification number. |
 | **Deprecated** | Superseded; kept so older artifacts and decisions stay verifiable ([DEPRECATION.md](DEPRECATION.md)). |
 
-Amendments and revisions to a published specification are proposed in `spec/drafts/` first, then
-folded into the specification itself when accepted. Implementation reports are as welcome as
+Larger amendments and revisions may be proposed in `spec/drafts/` first, then folded into the
+specification itself when accepted. Implementation reports are as welcome as
 text changes: tell us which vector files your implementation passes, in an issue or a Discussion,
 and it will be listed in the README.
 

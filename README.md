@@ -68,7 +68,7 @@ Each draft names the specification it amends, and SPEC-008 names the ones it bui
 
 ## Try it in a minute
 
-Everything below runs offline, with no account and no key of yours.
+Nothing below needs an account, a key of yours or a call to our servers. Once installed, the checks run offline.
 
 **Check a seal and evaluate a decision** with the reference CLI:
 
@@ -183,7 +183,7 @@ python3 binding-vectors/check.py binding-vectors/vectors.json         # SPEC-011
 
 ## How the specifications change
 
-A specification starts as a **Draft** and becomes **Active** once an independent implementation passes its vectors ([SPEC-007 §8](spec/NOMOS-SPEC-007.md#8-conformance-and-implementation-status) sets out what that means). Within a specification, compatible changes raise the minor version and are proposed first as an amendment or revision in [`spec/drafts/`](spec/drafts/). A backward-incompatible change to an Active specification takes a new specification number ([`DEPRECATION.md`](DEPRECATION.md)). Every change is recorded in [`CHANGELOG.md`](CHANGELOG.md).
+Each specification is a **Draft** or **Active**, as its own header states. NOMOS-SPEC-007 onward stay Drafts until an independent implementation passes their vectors ([SPEC-007 §8](spec/NOMOS-SPEC-007.md#8-conformance-and-implementation-status), SPEC-008 §10). Within a specification, compatible changes raise the minor version; larger ones may be proposed first as an amendment or revision in [`spec/drafts/`](spec/drafts/). A backward-incompatible change to an Active specification takes a new specification number ([`DEPRECATION.md`](DEPRECATION.md)). Every change is recorded in [`CHANGELOG.md`](CHANGELOG.md).
 
 To propose a change, report an ambiguity or contribute an implementation, see [`CONTRIBUTING.md`](CONTRIBUTING.md). Security issues: [`SECURITY.md`](SECURITY.md). Conduct: [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md).
 

@@ -23,6 +23,6 @@ is a convenience and the files are authoritative.
 of NOMOS-SPEC-007 (1.8.0, 1.9.0, 1.10.0). It also keeps a short pointer at each place a
 specification used to live, so older links still lead somewhere.
 
-A Draft becomes Active once an independent implementation passes its vectors; see
+NOMOS-SPEC-007 onward stay Drafts until an independent implementation passes their vectors; see
 [How the specifications change](../README.md#how-the-specifications-change) and
 [`IMPLEMENTING.md`](../IMPLEMENTING.md).
