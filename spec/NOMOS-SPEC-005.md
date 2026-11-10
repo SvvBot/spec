@@ -1,7 +1,7 @@
 # NOMOS-SPEC-005: Public Query Extension
 
 **Status:** Draft
-**Version:** 1.5.0
+**Version:** 1.6.0
 **Extends:** NOMOS-SPEC-001 v2.0.0
 **Published:** 2026-07-22
 **Authors:** Safehaven AI Corp. / NOMOS Protocol Working Group
@@ -185,6 +185,56 @@ artifact's publicly-known seal hash and the transcript's own `inputs`,
 verify the transcript has not been altered since it was sealed, without calling
 the runtime. This is a spot-check of transcript integrity; it is not the
 artifact's own seal (NOMOS-SPEC-001 §8.1) and does not substitute for it.
+
+### 2.4 Signed statement (RECOMMENDED)
+
+`audit_hash` (§2.2) shows that a transcript's fields agree with each other. It does not show who
+wrote them: anyone who can change a stored transcript can recompute its hash. A runtime SHOULD
+therefore sign, at the moment it answers a query, a statement of what it decided, with a key it
+publishes (NOMOS-SPEC-001 §8.1; NOMOS-SPEC-010 suites), and return it with the transcript as
+`signature`:
+
+```json
+"signature": {
+  "algorithm": "Ed25519",
+  "kid":       "<the published key's id>",
+  "value":     "<base64 signature over the UTF-8 JCS of statement>",
+  "statement": {
+    "type":                       "nomos.authority_query.statement/1",
+    "query_id":                   "<string>",
+    "artifact":                   { "id": "<string>", "version": "<string|null>", "seal_hash": "<string|null>" },
+    "inputs":                     { ... },
+    "verdict":                    "<string>",
+    "outcome_code":               "<string|null>",
+    "matched_rule_id":            "<string|null>",
+    "open_higher_priority_count": "<integer|null>",
+    "rules_evaluated_digest":     "<SHA-256 hex of the JCS of rules_evaluated>",
+    "evaluator_version":          "<string>",
+    "queried_at":                 "<ISO 8601 UTC>",
+    "audit_hash":                 "<string>"
+  }
+}
+```
+
+- `inputs` are the facts as the transcript keeps them, after the artifact's redaction
+  (NOMOS-SPEC-001 §4.8.1): the facts a holder can see are the facts that were signed.
+- `evaluator_version` names the evaluation semantics that produced the verdict. A runtime MUST change
+  it whenever the same artifact and facts could get a different verdict or deciding rule, so that a
+  permanent transcript is never read as how the authority answers today.
+- The statement MUST be stored exactly as signed, and returned unchanged by §2.1.
+- A transcript minted before a runtime signed statements MUST NOT be signed afterwards: that would
+  attest to stored data nobody signed when it was decided. Such a transcript has `signature: null`.
+
+A holder checks a transcript in three steps, with the published key alone:
+1. recompute `audit_hash` (§2.2);
+2. compare each field the transcript shows with the statement (`rules_evaluated` through its
+   digest), naming any that differ;
+3. verify `value` over the JCS of `statement` with the key whose id is `kid`.
+
+The signature shows who decided what, and when. It does not show that the artifact's rules give
+this verdict for these facts: that is a re-evaluation, with the evaluator the statement names.
+
+Test vectors: `query-statement-vectors/` (seven cases, a dependency-free checker).
 
 ### 2.3 Non-existent or unpublished queries
 
@@ -395,6 +445,9 @@ is unaffected by this document's existence.
   progressive-intake feature that silently bundles facts undermines the
   disclosure guarantee in §1.4: a caller who never confirmed a fact should never
   see it treated as resolved.
+- **`audit_hash` is not authenticity.** A transcript with only `audit_hash` can be rewritten,
+  hash and all, by whoever holds the store. A runtime MUST NOT present such a transcript as
+  verified; a signed statement (§2.4) is what lets a holder rely on it without trusting the runtime.
 - **Unguessable `query_id`.** Since transcript retrieval (§2) requires no
   authentication, `query_id` is the only access control on a specific
   transcript. It MUST have sufficient entropy that enumeration is infeasible.
