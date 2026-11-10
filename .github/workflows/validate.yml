@@ -1,5 +1,9 @@
 name: Validate
 
+# Every published vector file is checked here, by every implementation in this repository that
+# claims it, and every generator must reproduce its committed file byte for byte. A change to a
+# spec, a vector or a reference that breaks any of them fails the pull request.
+
 on:
   push:
     branches: [main]
@@ -7,10 +11,9 @@ on:
     branches: [main]
 
 jobs:
-  validate-schema:
-    name: Validate examples against schema
+  python-reference:
+    name: Python reference (schemas, seals, SPEC-007/008/010/011 vectors)
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -67,16 +70,94 @@ jobs:
               print(f"\nAll {len(examples)} example(s) valid.")
           EOF
 
-      - name: Verify example seals (structure check, no key required)
+      - name: Verify example seals with the public test key
         run: |
           for f in examples/*.nomos; do
-            echo "Checking $f ..."
-            python verify/verify.py "$f"
+            python verify/verify.py "$f" --key deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
           done
-      - name: Act vectors (NOMOS-SPEC-008) through the Python reference
+
+      - name: SPEC-008 Act vectors through the Python reference
         run: python act-vectors/check.py act-vectors/vectors.json
-      - name: Tool-binding vectors (NOMOS-SPEC-011) through the Python reference
+      - name: SPEC-008 vectors and mutants reproduce byte for byte
+        working-directory: act-vectors
+        run: |
+          python generate.py pub_lending_v1.nomos | cmp - vectors.json
+          python mutants.py vectors.json | cmp - mutants.json
+
+      - name: SPEC-007 rev. 1.9 chain vectors (every listed order)
+        run: python chain-of-trust-vectors/python/check_19.py chain-of-trust-vectors/vectors-1.9.json
+      - name: SPEC-007 rev. 1.10 revocation-source vectors
+        run: python chain-of-trust-vectors/python/check_revocations.py chain-of-trust-vectors/revocation-vectors-1.10.json
+      - name: SPEC-007 vectors and revocation mutants reproduce byte for byte
+        working-directory: chain-of-trust-vectors
+        run: |
+          python generate_19.py | cmp - vectors-1.9.json
+          python mutants_revocations.py revocation-vectors-1.10.json | cmp - revocation-mutants-1.10.json
+
+      - name: SPEC-010 signature-suite vectors
+        run: python suite-vectors/check.py suite-vectors/vectors.json
+      - name: SPEC-010 vectors reproduce byte for byte
+        working-directory: suite-vectors
+        run: python generate.py | cmp - vectors.json
+
+      - name: SPEC-011 tool-binding vectors through the Python reference
         run: python binding-vectors/check.py binding-vectors/vectors.json
+
       - name: Claude Code marketplace names the agent hook's npm package
         run: |
           python -c "import json; m=json.load(open('.claude-plugin/marketplace.json')); p=m['plugins'][0]; assert p['name']=='nomos' and p['source']=={'source':'npm','package':'nomos-guard','version':p['source']['version']}, p; print('ok', p['source'])"
+
+  node:
+    name: Node (links, TypeScript references, SPEC-001/005/009 conformance)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Every relative link and heading anchor in the Markdown resolves
+        run: node scripts/check-links.mjs
+
+      - name: Both spec indexes agree with each specification's own Status and Version
+        run: node scripts/check-spec-index.mjs
+
+      - name: Install the CLI and TypeScript references
+        run: npm ci
+
+      - name: Example seals with the TypeScript verifier
+        run: |
+          for f in examples/*.nomos; do
+            npx tsx verify/verify.ts "$f" --key deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+            node scripts/seal-example.mjs "$f"
+          done
+          git diff --exit-code examples/   # every example seal is current
+
+      - name: SPEC-001 conformance suite
+        run: npx tsx conformance/run.ts
+
+      - name: SPEC-005 signed query-statement vectors
+        run: node query-statement-vectors/check.mjs
+
+      - name: SPEC-007 vectors through the TypeScript prototype
+        run: |
+          npx tsx chain-of-trust-vectors/check.ts
+          npx tsx chain-of-trust-vectors/check-1.9.ts
+          npx tsx prototype/chain-of-trust/test.ts
+
+      - name: SPEC-010 vectors through the independent Node verifier and the prototype
+        run: |
+          node suite-vectors/check.mjs suite-vectors/vectors.json
+          npx tsx suite-vectors/check-prototype.ts suite-vectors/vectors.json
+
+      - name: SPEC-009 certificate selection, profile, and the runner against the reference relying party
+        working-directory: submission-vectors
+        run: |
+          npm install --no-audit --no-fund
+          node selection.mjs --check
+          node selection.mjs | cmp - selection.json
+          node profile.mjs | cmp - profile.json
+          node reference-rp.mjs 4801 &
+          for i in $(seq 1 30); do curl -s -o /dev/null http://localhost:4801/ && break; sleep 0.5; done
+          node run.mjs http://localhost:4801

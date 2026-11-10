@@ -1,6 +1,6 @@
 # NOMOS-SPEC-009 conformance
 
-Checks a relying party's HTTP behaviour against [NOMOS-SPEC-009](../spec/drafts/NOMOS-SPEC-009.md): discovery, the
+Checks a relying party's HTTP behaviour against [NOMOS-SPEC-009](../spec/NOMOS-SPEC-009.md): discovery, the
 status for every verdict, idempotency, resubmission with consent, and the transport rules. It only
 speaks HTTP, so the relying party can be written in any language.
 

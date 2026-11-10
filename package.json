@@ -9,7 +9,10 @@
   "scripts": {
     "nomos": "tsx cli/nomos.ts",
     "verify": "tsx verify/verify.ts",
-    "verify:all": "for f in examples/*.nomos; do npx tsx verify/verify.ts \"$f\"; done"
+    "verify:all": "for f in examples/*.nomos; do npx tsx verify/verify.ts \"$f\" --key deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef; done",
+    "check:links": "node scripts/check-links.mjs",
+    "check:index": "node scripts/check-spec-index.mjs",
+    "seal-example": "node scripts/seal-example.mjs"
   },
   "devDependencies": {
     "tsx": "^4.7.0",

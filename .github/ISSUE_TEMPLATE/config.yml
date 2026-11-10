@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Implementation report
+    url: https://github.com/nomos-spec/spec/discussions
+    about: Built a NOMOS implementation? Say which specifications and vector files it passes, and we will list it in the README.
+  - name: Question or discussion
+    url: https://github.com/nomos-spec/spec/discussions
+    about: Questions about the specifications, design discussion, and ideas not yet ready to be a change request.
+  - name: Security issue
+    url: https://github.com/nomos-spec/spec/blob/main/SECURITY.md
+    about: Please do not open a public issue for a vulnerability. SECURITY.md says how to report one privately.

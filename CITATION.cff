@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use or build on the NOMOS Protocol, please cite it as below. Cite an individual specification by number and version, for example NOMOS-SPEC-008 0.7.0."
+title: "NOMOS Protocol: an open specification for Computable Authority"
+abstract: "An open, vendor-neutral specification for Computable Authority: making an institution's authority over an action something any system can check before the action takes effect. Thirteen specifications cover sealed policy artifacts, chain-of-trust key certificates, Acts that bind one exact action to sealed rules, signed testimony and human consents, discovery and submission, signature suites, tool bindings, enforcement points, and authority registries, with test vectors and reference implementations."
+type: software
+authors:
+  - family-names: Sendagi
+    given-names: Allan
+    email: allan@nomosprotocol.com
+  - name: "NOMOS Protocol Working Group"
+repository-code: "https://github.com/nomos-spec/spec"
+url: "https://nomosprotocol.com/spec"
+license: CC-BY-4.0
+keywords:
+  - computable authority
+  - authorization
+  - AI agents
+  - policy as code
+  - verifiable credentials
+  - digital signatures
+  - governance

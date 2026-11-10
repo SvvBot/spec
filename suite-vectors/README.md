@@ -1,6 +1,6 @@
 # NOMOS-SPEC-010 signature suite vectors
 
-Test vectors for [NOMOS-SPEC-010](../spec/drafts/NOMOS-SPEC-010.md), and two independent verifiers
+Test vectors for [NOMOS-SPEC-010](../spec/NOMOS-SPEC-010.md), and two independent verifiers
 that pass them.
 
 ```
