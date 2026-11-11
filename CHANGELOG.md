@@ -7,6 +7,17 @@ Spec versions follow [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [NOMOS-SPEC-014 0.1.0] — 2026-11-11 (Resolution: which authorities govern an act, and is that all)
+
+### Added
+- **NOMOS-SPEC-014 (Draft 0.1.0), Resolution** (`spec/NOMOS-SPEC-014.md`): the function before every other specification — `R(context, t)`, the applicable set of authorities for an act, with evidence of completeness relative to the relying party's pinned registrars. Four entry kinds (`applies`, `recognizes`, `closed`, `superseded`) on NOMOS-SPEC-013's chain discipline; scope predicates in NOMOS-SPEC-008's condition grammar, three-valued through any conforming SPEC-008 evaluator; four conditions (C5 resolution independence, C6 claim authority, C7 currency, C8 closure or silence), each necessary by an attack from genuine artifacts alone; three results (RESOLVED incl. provably-empty under closure, CONFLICT surfaced never machine-ordered, INCOMPLETE named never permission); the strict cross-authority combination preserving every escalation by name.
+- **`resolution-vectors/vectors.json`** (16 vectors): the happy paths and the four necessity attacks — applicability hiding, jurisdiction squatting, the zombie authority, the starved resolver with its stale-closure arm — each carrying both the enforced expectation and the ablated one.
+- Index rows in `spec/README.md` and the README specification table.
+
+Draft, per the house rule: no interoperability claim until an independent resolver passes every vector. The reference implementation (TypeScript, NOMOS platform) runs the vectors, the necessity/independence table and the shuffle determinism check in CI.
+
+---
+
 ## [Repository] — 2026-11-10 (Every specification in one folder; every vector checked on every change)
 
 No specification text changes in this entry.
