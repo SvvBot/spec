@@ -1,6 +1,6 @@
 # The NOMOS specifications
 
-All thirteen, whatever their status. Each file states its own status, version and date; this index
+All fourteen, whatever their status. Each file states its own status, version and date; this index
 is a convenience and the files are authoritative.
 
 | Spec | Title | Status | Version |
@@ -18,6 +18,7 @@ is a convenience and the files are authoritative.
 | [NOMOS-SPEC-011](NOMOS-SPEC-011.md) | Tool Bindings | Draft | 0.1.0 |
 | [NOMOS-SPEC-012](NOMOS-SPEC-012.md) | Enforcement Points | Draft | 0.1.0 |
 | [NOMOS-SPEC-013](NOMOS-SPEC-013.md) | Authority Registries | Draft | 0.1.0 |
+| [NOMOS-SPEC-014](NOMOS-SPEC-014.md) | Resolution | Draft | 0.1.0 |
 
 [`drafts/`](drafts/) holds proposed amendments to NOMOS-SPEC-001 (2.2.0, 2.3.0, 2.4.0) and revisions
 of NOMOS-SPEC-007 (1.8.0, 1.9.0, 1.10.0). It also keeps a short pointer at each place a
