@@ -1,8 +1,9 @@
 {
   "spec": "NOMOS-SPEC-015",
-  "version": "0.1.0",
-  "note": "Issuance-proof vectors (Computable Authority Part IV). Each vector is a world (a pinned genesis digest + the organization's constitutional chain), a query (the seal being justified, the claimed time, the issuance proof ι or null), and the expected result. Vectors carrying `ablate` are the necessity constructions: `expect` is the enforced behavior, `expect_ablated` what an implementation missing exactly that condition answers — the attack succeeding. Symbolic forms resolved by the loader: \"$digest:<key>\" is the digest of that constitution's payload; a consent's over of \"$act\" is the enclosing ι's issuance digest (the only thing a consent may bind to); \"$other\" is a digest of something else. Constitutions' rules are evaluated by the real SPEC-008 verifier; escalations carry { role_required, required_consents }.",
+  "version": "0.2.0",
+  "note": "Issuance-proof vectors (Computable Authority Part IV). Each vector is a world (a pinned genesis digest + the organization's constitutional chain), a query (the seal being justified, the claimed time, the issuance proof ι or null), and the expected result. Vectors carrying `ablate` are the necessity constructions: `expect` is the enforced behavior, `expect_ablated` what an implementation missing exactly that condition answers — the attack succeeding. Symbolic forms resolved by the loader: \"$digest:<key>\" is the digest of that constitution's payload; a consent's over of \"$act\" is the enclosing ι's issuance digest (the only thing a consent may bind to); \"$other\" is a digest of something else. Constitutions' rules are evaluated by the real SPEC-008 verifier; escalations carry { role_required, required_consents }. SPEC-015 0.2.0: `role_holders` (top level; a vector may override it in its world) is the relying party's roster of who holds each role; a consent counts only from a holder listed for the role it claims. A query's `at` is when the seal was made, as the relying party knows it: currency is judged there, and ι's own time must lie within `max_issuance_lag_seconds` (default 7 days) of it. Ablation `C9-certified` counts consents without the roster.",
   "artifact_digest": "a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1",
+  "role_holders": { "director": ["alice", "bob", "carol"], "observer": ["carol"], "cco": ["dave-the-cco", "mallory"] },
   "payloads": {
     "K_BOARD2": { "meta": { "name": "constitution-board-2-of-3" }, "logic": { "resolution": { "conflict_policy": "highest_priority", "tie_breaker": "deny_wins", "default_outcome": "block" }, "decisions": [ { "id": "seal", "when": "governance_action == \"seal\"", "priority": 10, "then": [ { "type": "escalate", "escalation_id": "board" } ] }, { "id": "amend", "when": "governance_action == \"amend\"", "priority": 10, "then": [ { "type": "escalate", "escalation_id": "board" } ] } ] }, "escalations": { "board": { "role_required": "director", "required_consents": 2 } } },
     "K_BOARD2_V2": { "meta": { "name": "constitution-board-2-of-3 v2" }, "logic": { "resolution": { "conflict_policy": "highest_priority", "tie_breaker": "deny_wins", "default_outcome": "block" }, "decisions": [ { "id": "seal", "when": "governance_action == \"seal\"", "priority": 10, "then": [ { "type": "escalate", "escalation_id": "board" } ] }, { "id": "amend", "when": "governance_action == \"amend\"", "priority": 10, "then": [ { "type": "escalate", "escalation_id": "board" } ] } ] }, "escalations": { "board": { "role_required": "director", "required_consents": 2 } } },
@@ -117,6 +118,31 @@
       "query": { "at": "2026-11-01T00:00:00Z", "iota": { "act": { "type": "authority.seal", "subject": "trading-policy", "params": { "digest": "$artifact", "version": "2.4" } }, "constitution": "$digest:m1", "at": "2026-11-01T00:00:00Z", "consents": [ { "role": "cco", "holder": "dave-the-cco", "over": "$act" } ] } },
       "expect": { "status": "INVALID_AMENDMENT" },
       "expect_ablated": { "status": "ISSUED" }
+    },
+    {
+      "id": "attack-backdated-issuance",
+      "description": "C10 necessity, the time arm (0.2.0). The board tightened the constitution in June (1 director → 2). A seal made in November carries an ι that claims May, names April's text and is approved by one director. 0.1.0 judged currency at ι's own time and issued it. Enforced: ι's time is six months from when the seal was made, OUT_OF_TIME. Ablated (currency at ι's word): ISSUED.",
+      "ablate": "C10",
+      "world": { "genesis_pin": "$digest:k0", "constitutions": { "k0": { "payload": "$payload:K_BOARD1", "from": "2026-01-01T00:00:00Z" }, "k1": { "payload": "$payload:K_BOARD2", "from": "2026-06-01T00:00:00Z", "issuance": { "act": { "type": "constitution.amend", "subject": "constitution", "params": { "digest": "$digest:k1", "version": "2" } }, "constitution": "$digest:k0", "at": "2026-06-01T00:00:00Z", "consents": [ { "role": "director", "holder": "alice", "over": "$act" } ] } } } },
+      "query": { "at": "2026-11-01T00:00:00Z", "iota": { "act": { "type": "authority.seal", "subject": "trading-policy", "params": { "digest": "$artifact", "version": "2.4" } }, "constitution": "$digest:k0", "at": "2026-05-01T00:00:00Z", "consents": [ { "role": "director", "holder": "alice", "over": "$act" } ] } },
+      "expect": { "status": "OUT_OF_TIME" },
+      "expect_ablated": { "status": "ISSUED" }
+    },
+    {
+      "id": "attack-invented-consents",
+      "description": "C9 necessity, the consent arm (0.2.0). The officer writes the quorum himself: two consents over exactly this issuance from holders nobody certified as directors. 0.1.0 counted claimed roles and issued it. Enforced: a consent counts only from a holder the relying party knows holds the role, CONSENTS_INSUFFICIENT with none counted. Ablated (claimed roles counted): ISSUED.",
+      "ablate": "C9-certified",
+      "world": { "genesis_pin": "$digest:k0", "constitutions": { "k0": { "payload": "$payload:K_BOARD2", "from": "2026-01-01T00:00:00Z" } } },
+      "query": { "at": "2026-11-01T00:00:00Z", "iota": { "act": { "type": "authority.seal", "subject": "trading-policy", "params": { "digest": "$artifact", "version": "2.4" } }, "constitution": "$digest:k0", "at": "2026-11-01T00:00:00Z", "consents": [ { "role": "director", "holder": "made-up-1", "over": "$act" }, { "role": "director", "holder": "made-up-2", "over": "$act" } ] } },
+      "expect": { "status": "CONSENTS_INSUFFICIENT", "required": 2, "counted": 0 },
+      "expect_ablated": { "status": "ISSUED" }
+    },
+    {
+      "id": "ambiguous-in-force-time",
+      "description": "Two constitutions in force from the same instant. Which is the genesis would depend on presentation order; 0.2.0 refuses the chain as ambiguous, the same under every order.",
+      "world": { "genesis_pin": "$digest:t0", "constitutions": { "t0": { "payload": "$payload:K_BOARD1", "from": "2026-01-01T00:00:00Z" }, "t1": { "payload": "$payload:K_CCO", "from": "2026-01-01T00:00:00Z" } } },
+      "query": { "at": "2026-11-01T00:00:00Z", "iota": { "act": { "type": "authority.seal", "subject": "trading-policy", "params": { "digest": "$artifact", "version": "2.4" } }, "constitution": "$digest:t0", "at": "2026-11-01T00:00:00Z", "consents": [ { "role": "director", "holder": "alice", "over": "$act" } ] } },
+      "expect": { "status": "INVALID_AMENDMENT" }
     }
   ]
 }

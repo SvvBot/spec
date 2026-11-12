@@ -24,12 +24,13 @@
   §3  HOLE 2 — self-declared consents. The 0.1.0 core counts a consent's claimed role and holder;
       the spec only says consents SHOULD travel as signed Acts. The faithless officer can write
       his own quorum (`invented_consents_issue`).
-  §4  Officer indifference, for the fixed core (consents count only from holders certified for
-      the role; ι's time within the relying party's bound of the time the seal is known to have
-      been made): an ISSUED result implies the pinned genesis, every amendment issued under its
-      predecessor, ι authorizing exactly this seal, the constitution in force at ι's time (which
-      is within the bound of the real time), and n distinct certified holders over exactly this
-      issuance (`officer_indifference`). The fix closes both holes (`fixed_refuses_*`).
+  §4  Officer indifference, for the core as fixed in SPEC-015 0.2.0 (consents count only from
+      holders certified for the role; currency is judged at the time the seal was made, as the
+      relying party knows it, and ι's own time must lie within its bound of that): ISSUED implies
+      the pinned genesis, every amendment issued under its predecessor, ι authorizing exactly this
+      seal, the constitution in force when the seal was made, and n distinct certified holders over
+      exactly this issuance (`officer_indifference`). `Checks.fixed` is 0.2.0; `Checks.v010` is
+      0.1.0.
 -/
 
 set_option linter.unusedSectionVars false
@@ -106,11 +107,13 @@ structure Checks where
   c11 : Bool := true
   c12 : Bool := true
   certified : Bool := false
-  /-- ι's time must lie in [q.time − b, q.time] -/
+  /-- ι's time must lie within `b` of when the seal was made (q.time) -/
   timeBound : Option Nat := none
+  /-- currency is judged at q.time (when the seal was made), not at ι's own time -/
+  currencyAtSeal : Bool := false
 
 def Checks.v010 : Checks := {}
-def Checks.fixed (b : Nat) : Checks := { certified := true, timeBound := some b }
+def Checks.fixed (b : Nat) : Checks := { certified := true, timeBound := some b, currencyAtSeal := true }
 
 section
 variable (ck : Checks) (w : World K Role Holder Subj Dg)
@@ -148,7 +151,7 @@ def inForce (k0 : Const K Role Holder Subj Dg) (chain : List (Const K Role Holde
 def inTime (q : Query Role Holder Subj Dg) (p : Proof Role Holder Subj Dg) : Bool :=
   match ck.timeBound with
   | none => true
-  | some b => decide (p.time ≤ q.time) && decide (q.time ≤ p.time + b)
+  | some b => decide (p.time ≤ q.time + b) && decide (q.time ≤ p.time + b)
 
 /-- `verifyIssuance`. -/
 def verify (q : Query Role Holder Subj Dg) : Status :=
@@ -164,7 +167,7 @@ def verify (q : Query Role Holder Subj Dg) : Status :=
         if !(p.act.digest == q.artifact && p.act.gov == .seal) then .wrongAct
         else if !inTime ck q p then .outOfTime
         else
-          let kf := inForce k0 (k0 :: rest) p.time
+          let kf := inForce k0 (k0 :: rest) (if ck.currencyAtSeal then q.time else p.time)
           if ck.c10 then
             (if p.constitution == w.digest kf.payload then decideUnder ck w kf.payload p else .stale)
           else
@@ -297,10 +300,10 @@ theorem officer_indifference (b : Nat) (w : World K Role Holder Subj Dg) (q : Qu
     ∃ k0 rest p, w.chain = k0 :: rest ∧ w.digest k0.payload = w.pin ∧
       chainOk (Checks.fixed b) w (k0 :: rest) = true ∧
       q.iota = some p ∧ p.act.digest = q.artifact ∧ p.act.gov = .seal ∧
-      p.time ≤ q.time ∧ q.time ≤ p.time + b ∧
-      p.constitution = w.digest (inForce k0 (k0 :: rest) p.time).payload ∧
-      (w.evalK (inForce k0 (k0 :: rest) p.time).payload p = .allow ∨
-        ∃ r n, w.evalK (inForce k0 (k0 :: rest) p.time).payload p = .esc r n ∧
+      p.time ≤ q.time + b ∧ q.time ≤ p.time + b ∧
+      p.constitution = w.digest (inForce k0 (k0 :: rest) q.time).payload ∧
+      (w.evalK (inForce k0 (k0 :: rest) q.time).payload p = .allow ∨
+        ∃ r n, w.evalK (inForce k0 (k0 :: rest) q.time).payload p = .esc r n ∧
           n ≤ (counted (Checks.fixed b) w p r).length ∧
           ∀ x ∈ counted (Checks.fixed b) w p r, w.cert x r = true ∧
             ∃ c ∈ p.consents, c.holder = x ∧ c.role = r ∧ c.over = p.idig) := by
@@ -312,7 +315,7 @@ theorem officer_indifference (b : Nat) (w : World K Role Holder Subj Dg) (q : Qu
       Bool.not_true, Bool.false_eq_true, ↓reduceIte] at h
     by_cases hg : w.digest k0.payload = w.pin
     · rw [if_neg (by simpa using hg)] at h
-      by_cases hc : chainOk { certified := true, timeBound := some b } w (k0 :: rest) = true
+      by_cases hc : chainOk { certified := true, timeBound := some b, currencyAtSeal := true } w (k0 :: rest) = true
       · rw [if_neg (by simpa using hc)] at h
         split at h
         · cases h
@@ -320,7 +323,7 @@ theorem officer_indifference (b : Nat) (w : World K Role Holder Subj Dg) (q : Qu
           by_cases ha : (p.act.digest == q.artifact && p.act.gov == GovAction.seal) = true
           · rw [if_neg (by simpa using ha)] at h
             simp only [Bool.and_eq_true, beq_iff_eq] at ha
-            by_cases ht : inTime { certified := true, timeBound := some b } q p = true
+            by_cases ht : inTime { certified := true, timeBound := some b, currencyAtSeal := true } q p = true
             · rw [if_neg (by simpa using ht)] at h
               simp only [inTime, Bool.and_eq_true, decide_eq_true_eq] at ht
               split at h
