@@ -41,7 +41,7 @@ Every specification is in [`spec/`](spec/), whatever its status. Each file state
 | [004](spec/NOMOS-SPEC-004.md) | Composable Artifacts (`extends`) and Third-Party Attestations | Active | 1.4.0 | |
 | [005](spec/NOMOS-SPEC-005.md) | Public Query Extension: keyless queries, permanent transcripts, signed statements | Draft | 1.6.0 | [`query-statement-vectors/`](query-statement-vectors/) (7) |
 | [006](spec/NOMOS-SPEC-006.md) | Artifact Revocation: detached issuer-signed statements, signed revocation list, `max_age` | Active | 1.6.0 | |
-| [007](spec/NOMOS-SPEC-007.md) | Chain-of-Trust Key Certificates: recognizing an issuer with no prior relationship and no call home | Draft | 1.7.0 | [`chain-of-trust-vectors/`](chain-of-trust-vectors/) (14 + 37 + 22, 349 mutants) |
+| [007](spec/NOMOS-SPEC-007.md) | Chain-of-Trust Key Certificates: recognizing an issuer with no prior relationship and no call home | Draft | 1.7.0 | [`chain-of-trust-vectors/`](chain-of-trust-vectors/) (14 + 41 + 22, 349 mutants) |
 | [008](spec/NOMOS-SPEC-008.md) | Act Binding: one exact action bound to sealed rules, signed testimony and human consents | Draft | 0.7.0 | [`act-vectors/`](act-vectors/) (46, 1,804 mutants) |
 | [009](spec/NOMOS-SPEC-009.md) | Discovery and Submission: well-known documents, the HTTP binding, certificate presentation | Draft | 0.2.0 | [`submission-vectors/`](submission-vectors/) (17 HTTP checks, 7 selection cases) |
 | [010](spec/NOMOS-SPEC-010.md) | Signature Suites: `Ed25519`, `ES256`, `WebAuthn-ES256`; canonical keys | Draft | 0.2.0 | [`suite-vectors/`](suite-vectors/) (30) |
@@ -145,7 +145,7 @@ A `.nomos` artifact now moves through four distinct moments:
 | Implementation | Language | Covers | Checked against |
 |----------------|----------|--------|-----------------|
 | [`python/nomosprotocol/`](python/) — [`nomosprotocol` on PyPI](https://pypi.org/project/nomosprotocol/) | Python | JCS, SPEC-010 suites, SPEC-007 chains and revocation sources, the SPEC-008 Act verifier, SPEC-011 bindings; `accept()`, `act()`, `witness()`, `issuer()` for SPEC-009 | Every vector file here; generates the mutant sets |
-| [`prototype/chain-of-trust/`](prototype/chain-of-trust/) | TypeScript | SPEC-007 key certificates and chain verification, a CLI verifier, an HTTP receiver/presenter pair | SPEC-007 1.7.0 (14) and rev. 1.9 (37) vectors, SPEC-010 (30) |
+| [`prototype/chain-of-trust/`](prototype/chain-of-trust/) | TypeScript | SPEC-007 key certificates and chain verification, a CLI verifier, an HTTP receiver/presenter pair | SPEC-007 1.7.0 (14) and rev. 1.11 (41) vectors, SPEC-010 (30) |
 | [`suite-vectors/check.mjs`](suite-vectors/) | JavaScript, Node built-ins only | SPEC-010 suites, written separately from the Python reference | SPEC-010 (30) |
 | [`submission-vectors/reference-rp.mjs`](submission-vectors/) | JavaScript | A SPEC-009 relying party | `run.mjs` (17) |
 | [`verify/`](verify/), [`cli/`](cli/) | TypeScript, Python | Seal verification (SPEC-001 §8, SPEC-006 revocations); validate, exec, diff, lint | [`examples/`](examples/), [`conformance/`](conformance/) |
@@ -166,7 +166,7 @@ npm ci && pip install jsonschema ./python
 node scripts/check-links.mjs
 npx tsx conformance/run.ts                                            # SPEC-001: 23 checks
 node query-statement-vectors/check.mjs                                # SPEC-005: 7
-python3 chain-of-trust-vectors/python/check_19.py chain-of-trust-vectors/vectors-1.9.json                    # SPEC-007: 37
+python3 chain-of-trust-vectors/python/check_19.py chain-of-trust-vectors/vectors-1.11.json                   # SPEC-007: 41
 python3 chain-of-trust-vectors/python/check_revocations.py chain-of-trust-vectors/revocation-vectors-1.10.json # SPEC-007: 22
 python3 act-vectors/check.py act-vectors/vectors.json                 # SPEC-008: 48
 python3 suite-vectors/check.py suite-vectors/vectors.json             # SPEC-010: 30

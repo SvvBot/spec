@@ -89,7 +89,7 @@ chain.verify_revocation_list(lst, ROOT, now)          # NOMOS-SPEC-007 rev. 1.10
 ## Conformance
 
 This package is checked against:
-- every vector of NOMOS-SPEC-007 (1.7.0, rev. 1.9, rev. 1.10 revocation sources), NOMOS-SPEC-008
+- every vector of NOMOS-SPEC-007 (1.7.0, rev. 1.11, rev. 1.10 revocation sources), NOMOS-SPEC-008
   0.6.0 and NOMOS-SPEC-010 0.2.0;
 - the NOMOS-SPEC-009 selection vectors;
 - the NOMOS-SPEC-009 HTTP runner, 17 of 17, with `accept()` behind it
