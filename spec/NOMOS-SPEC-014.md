@@ -1,8 +1,9 @@
 # NOMOS-SPEC-014: Resolution
 
 **Status:** Draft
-**Version:** 0.1.0
+**Version:** 0.2.0
 **Proposed:** 2026-11-11
+**Revised:** 2026-11-12 (0.2.0: closure agreement, view age, the C7 attack restated; see §10)
 **Authors:** Safehaven AI Corp. / NOMOS Protocol Working Group
 **Uses:** NOMOS-SPEC-001, NOMOS-SPEC-006, NOMOS-SPEC-007, NOMOS-SPEC-008, NOMOS-SPEC-013
 
@@ -43,7 +44,10 @@ published vector. The key words MUST, MUST NOT, SHOULD and MAY are to be read as
   vocabulary it publishes.
 - **Applicable set 𝒜:** the authorities whose verdicts must all be satisfied for the act.
 - **Closure statement:** a registrar's signed assertion that a list of in-force authorities over
-  a scope is complete as of a time. The authenticated denial of existence for law.
+  a scope is complete as of a time. The authenticated denial of existence for law. A later closure
+  over the same scope replaces an earlier one from the later one's `at`.
+- **View:** the folded registrar record a resolver reads, and the time its log head was signed or
+  read (`head_at`). A view read live from the chain has age zero; a mirrored or cached one does not.
 - **Relying party ρ:** as in NOMOS-SPEC-008, extended with a set of **pins**: the registrars
   whose law it undertakes to honor.
 
@@ -65,8 +69,9 @@ zeros; the signed head as there). Four entry kinds are added:
 `applies` opens a claim for `name` from its `at` (re-stating an authority closes the prior
 claim at the new entry's `at` and opens the new terms). A NOMOS-SPEC-013 `withdrawn` entry
 closes the named authority's open claim at its `at`. A NOMOS-SPEC-013 `revoked` entry adds the
-authority to the registrar's revoked set. `closed` statements accumulate; `superseded` records
-the edge from its own `at`. A resolver MUST derive the registrar's state only by this fold —
+authority to the registrar's revoked set. `closed` statements accumulate, and a later closure
+over the same scope replaces an earlier one from its `at`; `superseded` records the edge from its
+own `at`. A resolver MUST derive the registrar's state only by this fold —
 never from a side channel the chain does not witness.
 
 `exclusive: true` on a claim asserts the registrar's sole precedence over the claim's scope. It
@@ -109,7 +114,26 @@ is not followed and imposes no obligations on its target). For each reached regi
    scope is TRUE on the context and whose age at `at` is within its freshness bound
    (`max_age_days`, default 90). A pinned registrar that is unreachable, or has no fresh
    covering closure, makes the resolution INCOMPLETE naming it. A closure dated after `at` does
-   not cover `at` — a later enumeration does not speak for an earlier moment.
+   not cover `at` — a later enumeration does not speak for an earlier moment; a closure replaced
+   by a later one over the same scope (signed at or before `at`) does not speak either.
+
+   **Closure agreement.** A closure is the registrar's own statement of what is in force, so it
+   MUST NOT contradict the registrar's chain. Among the registrar's fresh, unreplaced closures
+   whose scope is TRUE on the context: (a) every authority a closure names MUST have a claim that
+   survives step 2 (in force, not superseded, not revoked), and (b) every claim that survives
+   step 2 and whose scope is TRUE on the context MUST be named by at least one of them. Either
+   failure makes the resolution INCOMPLETE naming the registrar, the authority and which of (a)
+   (`closed_but_not_claimed`) or (b) (`claimed_but_not_closed`) failed. Without agreement, a
+   withdrawal, supersession or revocation drops law silently while a closure that still names it
+   stays fresh; with it, hiding law requires signing a closure that omits it. A registrar SHOULD
+   sign a new closure whenever law it names stops being in force; the reference registrar does so
+   automatically for removals, keeping the closure's original expiry, so a removal never extends
+   a review.
+
+   **View age.** A relying party that resolves against mirrored or cached views MUST set a bound
+   on their age (`max_head_age_seconds`); a view whose `head_at` is absent or older than the bound
+   at `at` makes the resolution INCOMPLETE naming the registrar. A stale view can carry a closure
+   still inside its own bound while the live log has moved on; no other check sees it.
 4. Any UNDECIDED scope anywhere (claim, certificate, edge, closure) contributes its open context
    facts to the resolution's missing set.
 
@@ -121,8 +145,9 @@ request listing "the authorities checked" MUST NOT influence membership.
 
 Exactly one of, with precedence INCOMPLETE > CONFLICT > RESOLVED:
 
-- **INCOMPLETE** — any open context fact, unreachable pinned registrar, or missing/stale
-  closure. Each MUST be named. For a consequential act, INCOMPLETE MUST NOT be read as
+- **INCOMPLETE** — any open context fact, unreachable pinned registrar, missing or stale
+  closure, closure disagreement, or view older than the relying party's bound. Each MUST be
+  named. For a consequential act, INCOMPLETE MUST NOT be read as
   permission, and a resolver MUST NOT return the subset it could establish as if it were the
   answer. (Precedence: a missing fact could still dissolve an apparent conflict.)
 - **CONFLICT** — `exclusive` claims from two or more distinct registrars all cover the context.
@@ -168,9 +193,12 @@ to as of `t` — forum shopping becomes provable from the record rather than mer
 [`resolution-vectors/vectors.json`](../resolution-vectors/vectors.json) carries, for each
 vector, a world, a query, and the expected result; vectors with an `ablate` field additionally
 carry `expect_ablated` — the behavior of an implementation missing exactly that condition, i.e.
-the attack succeeding. A conforming resolver MUST produce every `expect`, MUST NOT produce any
+the attack succeeding. The C7 ablation judges membership at the vector's `ablate_at` while
+closures are still judged at `at`; the C8 ablation reads no closure, no closure contents and no
+view age. A conforming resolver MUST produce every `expect`, MUST NOT produce any
 `expect_ablated` (except in an explicit test-only ablation mode), and MUST be order-independent
-under shuffling of every list in the world.
+under shuffling of every list in the world. An implementation offering ablation modes SHOULD also
+show that each attack succeeds under its own ablation and under no other.
 
 ## 7. Privacy considerations
 
@@ -187,24 +215,52 @@ Each attack uses only genuine, correctly signed artifacts. Each is a published v
   the set from the presentation commits a wrongful act on genuine artifacts.
 - **Jurisdiction squatting** (without C6): a correctly certified registrar key appends a claim
   outside its certified scope; a resolver that checks signatures but not scope imports foreign
-  law into strangers' transactions — or launders a permissive authority over a strict scope.
+  law into strangers' transactions. Under the strict combination of §4 an added authority can
+  only add refusals, so C6 prevents wrongful refusals and foreign law imposed on strangers; it is
+  not what prevents a wrongful commit (supersession and revocation act only on a registrar's own
+  claims, so squatting cannot remove law).
 - **The zombie authority** (without C7): a superseded authority, cryptographically valid
-  forever, is satisfied after its replacement took force; the wrong lives in the set's
-  staleness, not the artifact's validity.
+  forever, is satisfied after its replacement took force because membership is judged at a
+  stale instant rather than at `at`. The wrong lives in the set's staleness, not the artifact's
+  validity. (Ignoring currency altogether is not this attack: it only adds law.)
 - **The starved resolver** (without C8): no one lies — a pinned registrar's log is merely
   unreachable, or its closure stale. Answering with the reachable subset reproduces hiding
   without touching the carrier. Silence of a log, like silence of a witness in NOMOS-SPEC-008,
-  must cost the proposer the verdict, never buy it.
+  must cost the proposer the verdict, never buy it. Two further arms: **withdrawal under a
+  closure** (a genuine withdrawal while a fresh closure still names the law; closure agreement
+  stops it) and the **stale view** (a cached copy whose closure is inside its own bound; the
+  view-age bound stops it).
 
-Containment mirrors NOMOS-SPEC-007's: a compromised claim key can **add** law within its scope
-(worst case wrongful refusal — the safe direction); **hiding** law requires a closure statement
-that contradicts the registrar's own append-only chain — possible, and permanently
-self-incriminating.
+Containment. An added applicability claim, from any key, never removes a member: the worst case
+is wrongful refusal, the safe direction. Removing law takes one of withdrawal, supersession or
+revocation, all signed by the registrar's key; under closure agreement each holds every
+resolution it touches open until the registrar also signs a closure that omits the law. So hiding
+law requires a signed closure that, read against the registrar's own append-only chain, shows
+exactly what was dropped and when: not prevented, but attributable and permanent. A registrar
+that separates the key for `closed` entries from the key for other entries makes that a
+two-key act.
 
 ## 9. Open problems
 
 Inherited and stated, not hidden: registrar governance (who may close a scope — the
 NOMOS-SPEC-007 §9 question squared); characterization of context fields beyond the v0
 vocabulary; private-law resolution (contracts as authorities); freshness economics per scope
-class; and the Draft-exit condition — a second, independent implementation agreeing on every
-vector.
+class, now two bounds (closure age and view age); and the Draft-exit condition — a second,
+independent implementation agreeing on every vector.
+
+## 10. Changes
+
+**0.2.0 (2026-11-12).** Found by mechanizing the resolver
+([`papers/resolution/lean/Resolution.lean`](../papers/resolution/lean/Resolution.lean)):
+
+- Closure agreement (§3.3, C8). In 0.1.0 a closure's freshness was read but never its list, so a
+  genuine withdrawal hid law while an older closure still named it.
+- View age (§3.3, C8). 0.1.0 gave no way to tell a stale copy of a log from the live one.
+- A later closure over the same scope replaces an earlier one (§1, §2).
+- §8: C6 is restated as protection against wrongful refusal; the C7 attack is restated as
+  membership judged at a stale instant; containment is restated as attribution.
+- Vectors: 20 (from 16); the zombie vector judges membership at `ablate_at`; new vectors for a
+  withdrawal under a closure, a stale view, a claim no closure names, and overlapping closures
+  that agree.
+
+**0.1.0 (2026-11-11).** First draft.
