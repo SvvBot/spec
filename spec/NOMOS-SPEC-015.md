@@ -1,8 +1,9 @@
 # NOMOS-SPEC-015: Issuance Proofs
 
 **Status:** Draft
-**Version:** 0.1.0
+**Version:** 0.2.0
 **Proposed:** 2026-11-12
+**Revised:** 2026-11-12 (0.2.0: consents only from certified holders; currency judged when the seal was made; see §10)
 **Authors:** Safehaven AI Corp. / NOMOS Protocol Working Group
 **Uses:** NOMOS-SPEC-001, NOMOS-SPEC-007, NOMOS-SPEC-008, NOMOS-SPEC-013, NOMOS-SPEC-014
 
@@ -54,7 +55,11 @@ published vector. The key words MUST, MUST NOT, SHOULD and MAY are to be read as
   consent may cover (`over`): an approval bound to anything less transplants.
 - **Genesis K₀:** the first constitution on an organization's chain, whose digest the relying
   party pins (beside or inside the NOMOS-SPEC-007 root it already pins).
-- **Relying party ρ:** as in NOMOS-SPEC-008, extended with the genesis pin.
+- **Relying party ρ:** as in NOMOS-SPEC-008, extended with the genesis pin and a **role roster**:
+  for each role, the holders whose consent keys chain, with that role in scope, to a root ρ
+  pinned (NOMOS-SPEC-007).
+- **Seal time:** when the seal was made, as ρ knows it from a source the presenter does not
+  control (the registrar log's listing time, ρ's own record of the seal) — never ι's word.
 
 ## 2. The constitutional chain
 
@@ -68,8 +73,10 @@ NOMOS-SPEC-013/-014 registrar log); verification needs only the records themselv
 
 ## 3. Verification
 
-Given a pinned genesis digest, a constitutional chain, a seal digest to justify, a claimed time
-`t`, and ι (or its absence), a conforming verifier proceeds in this order:
+Given a pinned genesis digest, a role roster, a constitutional chain, a seal digest to justify,
+the seal time `t`, and ι (or its absence), a conforming verifier proceeds in this order. Two
+constitutions with the same in-force time make the chain ambiguous: `INVALID_AMENDMENT`, under
+every presentation order.
 
 1. **C11 — genesis pinning.** The chain's earliest constitution, by in-force time, MUST hash to
    the pinned genesis. A chain that certifies its own origin establishes nothing:
@@ -81,10 +88,11 @@ Given a pinned genesis digest, a constitutional chain, a seal digest to justify,
 3. **C9 — issuance as act.** Absent ι: `NO_ISSUANCE_PROOF`. A valid signature without ι is a
    draft, not an authority. The ι presented MUST authorize exactly the seal digest in question
    with `governance_action = seal`, else `WRONG_ACT`.
-4. **C10 — constitutional currency.** The constitution in force at ι's `at` is taken from the
-   chain, never from the proof. ι's claimed `constitution` MUST equal its digest, else
-   `STALE_CONSTITUTION` — consents satisfying withdrawn governance authorize nothing, however
-   genuine.
+4. **C10 — constitutional currency.** ι's `at` is the presenter's word, so it MUST lie within
+   ρ's bound of the seal time `t` (default 7 days), else `OUT_OF_TIME`. The constitution in force
+   at `t` is taken from the chain, never from the proof; ι's claimed `constitution` MUST equal its
+   digest, else `STALE_CONSTITUTION` — consents satisfying withdrawn governance authorize
+   nothing, however genuine, and a backdated ι cannot reach a superseded constitution.
 5. **The decision.** The issuance act's governance facts are evaluated against K by a conforming
    NOMOS-SPEC-008 evaluator (three-valued; a blocking governance fact ι omits yields
    `INCOMPLETE` naming it — silence about a fact that could forbid issuance is never
@@ -92,14 +100,17 @@ Given a pinned genesis digest, a constitutional chain, a seal digest to justify,
    consents (a constitution may carve out routine acts). `escalate` → the named escalation's
    `{ role_required, required_consents }` MUST be met by **distinct holders** of that role,
    each consenting `over` exactly this issuance digest; met → `ISSUED`, else
-   `CONSENTS_INSUFFICIENT` naming required and counted.
+   `CONSENTS_INSUFFICIENT` naming required and counted. A consent counts only from a holder ρ's
+   roster lists for the role it claims: a self-declared role is no consent. In a committed Act
+   (§4) this is the SPEC-008 check that the consent key is certified for the role.
 
 Verification MUST be deterministic and order-independent: shuffling the chain's presentation
 order or any consent list never changes the result.
 
 ## 4. Transport
 
-A real ι SHOULD travel as a committed NOMOS-SPEC-008 Act (the consents as its consent
+A real ι SHOULD travel as a committed NOMOS-SPEC-008 Act; whatever the transport, a consent
+counts only from a holder certified for its role (§3 step 5). A real ι (the consents as its consent
 statements, witnesses for governance facts), in which case signature verification is SPEC-008's
 `verifyAct` and this specification adds only the constitutional layer above it. ι is published
 **detached** beside the artifact — in the NOMOS-SPEC-004 attestation pattern, never under the
@@ -151,7 +162,8 @@ counterparty's work.
 
 ## 8. Security considerations: the four attacks
 
-Each uses only genuine, correctly signed artifacts. Each is a published vector.
+Each uses only genuine, correctly signed artifacts, except where the attack is precisely that
+something is not signed by whom it claims. Each is a published vector.
 
 - **The faithless officer** (defeats a verifier without C9): the correctly appointed officer
   seals an unapproved version with the genuine institution key. Everything in NOMOS-SPEC-001
@@ -164,6 +176,12 @@ Each uses only genuine, correctly signed artifacts. Each is a published vector.
   constitution, internally valid ι, every signature genuine, sound relative to itself. Only the
   relying party's pin distinguishes it from the real one, which is the point: legitimacy is
   conferred by the verifier's choice, never the presenter's self-description.
+- **The backdated issuance** (C10's time arm): a seal made in November carries an ι that claims
+  May, names April's lenient constitution and has one director's consent. Judged at ι's own time
+  (0.1.0) it issues; judged at the seal time, with ι's time bounded to it, it is `OUT_OF_TIME`.
+- **The invented consents** (C9's consent arm): the officer writes the quorum himself, consents
+  over exactly this issuance from holders nobody certified for the role. Counting claimed roles
+  (0.1.0) issues it, for a seal or an amendment; counting only rostered holders refuses it.
 - **The midnight amendment** (without C12): the officer who cannot meet the quorum first seals
   a friendlier constitution (their own consent suffices there), then issues validly under it.
   Under C12 the new constitution binds nobody — its own ι fails under the old K — and the coup
@@ -178,3 +196,21 @@ genesis ceremonies (for registered companies the state registry is the natural a
 DAOs and informal bodies the pin records a social fact); jurisdictional recognition of ι as
 evidence of due authorization; and the Draft-exit condition — a second, independent
 implementation agreeing on every vector.
+
+## 10. Changes
+
+**0.2.0 (2026-11-12).** Found by mechanizing the decision core in Lean
+([`papers/issuance/lean/Issuance.lean`](../papers/issuance/lean/Issuance.lean)), both reproduced
+against the reference implementation:
+
+- Currency is judged at the seal time ρ knows, and ι's own time must lie within ρ's bound of it
+  (§3 step 4). In 0.1.0 currency was judged at ι's `at`, which the presenter writes: a backdated
+  ι reached a superseded constitution.
+- A consent counts only from a holder certified for the role it claims (§3 step 5, §4). In 0.1.0
+  the verifier counted claimed roles, so whoever assembled ι, the faithless officer included,
+  could write the quorum himself, for a seal or an amendment.
+- Two constitutions with the same in-force time are refused as ambiguous (§3); 0.1.0's answer
+  depended on presentation order.
+- Vectors: 17 (from 14), with the roster at the top level of the file.
+
+**0.1.0 (2026-11-12).** First draft.

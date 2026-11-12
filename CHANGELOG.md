@@ -18,6 +18,20 @@ Draft, per the house rule: no interoperability claim until an independent implem
 
 ---
 
+## [NOMOS-SPEC-015 0.2.0] — 2026-11-12 (Issuance proofs: consents from certified holders, currency when the seal was made)
+
+### Changed
+- **Consents count only from certified holders (§3 step 5, §4).** In 0.1.0 a verifier counted each consent's claimed role, so whoever assembled ι, the faithless officer included, could write the quorum himself, for a seal or an amendment.
+- **Currency is judged at the seal time the relying party knows (§3 step 4),** and ι's own time must lie within its bound of that (default 7 days), else `OUT_OF_TIME`. In 0.1.0 currency was judged at ι's own `at`, which the presenter writes, so a backdated ι reached a superseded constitution.
+- **Two constitutions with the same in-force time are refused as ambiguous.** 0.1.0's answer depended on presentation order.
+- **Vectors: 17 (from 14),** with the role roster at the top level of the file.
+
+### Added
+- **`papers/issuance/`:** the decision core mechanized in Lean 4, where all three were found; officer indifference proved for 0.2.0.
+- **`papers/carried-authority/lean/Sufficiency.lean`:** Part II's Theorem 7 (sufficiency) and the necessity of each obligation in Lean. **`papers/resolution/lean/Composition.lean`:** Parts II and III end to end. **`papers/lakefile.lean`:** the proofs as one Lake package (`lake build`).
+
+---
+
 ## [NOMOS-SPEC-014 0.2.0] — 2026-11-12 (Resolution: a closure must agree with the log, and a log copy has an age)
 
 ### Changed
