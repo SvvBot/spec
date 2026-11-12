@@ -7,6 +7,17 @@ Spec versions follow [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [NOMOS-SPEC-015 0.1.0] — 2026-11-12 (Issuance proofs: did the institution decide this sealing)
+
+### Added
+- **NOMOS-SPEC-015 (Draft 0.1.0), Issuance Proofs** (`spec/NOMOS-SPEC-015.md`): custody of the sealing key alone authorizes nothing. An organization's constitution K is a sealed artifact whose rules govern its own acts of governance; "seal digest D as version V" is an act evaluated under K (by a conforming SPEC-008 evaluator, three-valued); the issuance proof ι travels detached beside the artifact (the SPEC-004 attestation pattern). Four conditions, each necessary by an attack from genuine keys alone: C9 issuance-as-act (the faithless officer), C10 constitutional currency (the stale constitution), C11 genesis pinning (the self-certified genesis — a complete counterfeit institution, defeated only by the relying party's pin), C12 amendment under the old law (the midnight amendment — a friendlier constitution sealed without its predecessor's quorum binds nobody, transitively). Consents count distinct holders of the named role over exactly the issuance digest — approvals never transplant across seals, constitutions or times.
+- **`issuance-vectors/vectors.json`** (14 vectors): the four necessity attacks with enforced AND ablated expectations, plus the consent discipline, prohibitions, INCOMPLETE on missing governance facts, routine carve-outs, and a valid amendment chain.
+- Index rows in `spec/README.md` and the README specification table.
+
+Draft, per the house rule: no interoperability claim until an independent implementation passes every vector. The reference implementation (TypeScript, NOMOS platform) runs the vectors, the necessity/independence table and the shuffle determinism check in CI.
+
+---
+
 ## [NOMOS-SPEC-014 0.2.0] — 2026-11-12 (Resolution: a closure must agree with the log, and a log copy has an age)
 
 ### Changed

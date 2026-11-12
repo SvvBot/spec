@@ -1,0 +1,122 @@
+{
+  "spec": "NOMOS-SPEC-015",
+  "version": "0.1.0",
+  "note": "Issuance-proof vectors (Computable Authority Part IV). Each vector is a world (a pinned genesis digest + the organization's constitutional chain), a query (the seal being justified, the claimed time, the issuance proof ι or null), and the expected result. Vectors carrying `ablate` are the necessity constructions: `expect` is the enforced behavior, `expect_ablated` what an implementation missing exactly that condition answers — the attack succeeding. Symbolic forms resolved by the loader: \"$digest:<key>\" is the digest of that constitution's payload; a consent's over of \"$act\" is the enclosing ι's issuance digest (the only thing a consent may bind to); \"$other\" is a digest of something else. Constitutions' rules are evaluated by the real SPEC-008 verifier; escalations carry { role_required, required_consents }.",
+  "artifact_digest": "a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1",
+  "payloads": {
+    "K_BOARD2": { "meta": { "name": "constitution-board-2-of-3" }, "logic": { "resolution": { "conflict_policy": "highest_priority", "tie_breaker": "deny_wins", "default_outcome": "block" }, "decisions": [ { "id": "seal", "when": "governance_action == \"seal\"", "priority": 10, "then": [ { "type": "escalate", "escalation_id": "board" } ] }, { "id": "amend", "when": "governance_action == \"amend\"", "priority": 10, "then": [ { "type": "escalate", "escalation_id": "board" } ] } ] }, "escalations": { "board": { "role_required": "director", "required_consents": 2 } } },
+    "K_BOARD2_V2": { "meta": { "name": "constitution-board-2-of-3 v2" }, "logic": { "resolution": { "conflict_policy": "highest_priority", "tie_breaker": "deny_wins", "default_outcome": "block" }, "decisions": [ { "id": "seal", "when": "governance_action == \"seal\"", "priority": 10, "then": [ { "type": "escalate", "escalation_id": "board" } ] }, { "id": "amend", "when": "governance_action == \"amend\"", "priority": 10, "then": [ { "type": "escalate", "escalation_id": "board" } ] } ] }, "escalations": { "board": { "role_required": "director", "required_consents": 2 } } },
+    "K_BOARD1": { "meta": { "name": "constitution-board-1" }, "logic": { "resolution": { "conflict_policy": "highest_priority", "tie_breaker": "deny_wins", "default_outcome": "block" }, "decisions": [ { "id": "seal", "when": "governance_action == \"seal\"", "priority": 10, "then": [ { "type": "escalate", "escalation_id": "board" } ] }, { "id": "amend", "when": "governance_action == \"amend\"", "priority": 10, "then": [ { "type": "escalate", "escalation_id": "board" } ] } ] }, "escalations": { "board": { "role_required": "director", "required_consents": 1 } } },
+    "K_ROUTINE": { "meta": { "name": "constitution-routine-carveout" }, "logic": { "resolution": { "conflict_policy": "highest_priority", "tie_breaker": "deny_wins", "default_outcome": "block" }, "decisions": [ { "id": "newsletter-free", "when": "governance_action == \"seal\" and authority == \"newsletter-policy\"", "priority": 20, "then": [ { "type": "allow" } ] }, { "id": "seal", "when": "governance_action == \"seal\"", "priority": 10, "then": [ { "type": "escalate", "escalation_id": "board" } ] } ] }, "escalations": { "board": { "role_required": "director", "required_consents": 2 } } },
+    "K_GUARDED": { "meta": { "name": "constitution-with-freeze-and-treasury" }, "logic": { "resolution": { "conflict_policy": "highest_priority", "tie_breaker": "deny_wins", "default_outcome": "block" }, "decisions": [ { "id": "no-treasury", "when": "authority == \"treasury-policy\"", "priority": 30, "then": [ { "type": "block" } ] }, { "id": "freeze", "when": "under_regulatory_freeze == true", "priority": 50, "then": [ { "type": "block" } ] }, { "id": "seal", "when": "governance_action == \"seal\"", "priority": 10, "then": [ { "type": "escalate", "escalation_id": "board" } ] } ] }, "escalations": { "board": { "role_required": "director", "required_consents": 2 } } },
+    "K_CCO": { "meta": { "name": "constitution-cco-alone" }, "logic": { "resolution": { "conflict_policy": "highest_priority", "tie_breaker": "deny_wins", "default_outcome": "block" }, "decisions": [ { "id": "seal", "when": "governance_action == \"seal\"", "priority": 10, "then": [ { "type": "escalate", "escalation_id": "cco" } ] }, { "id": "amend", "when": "governance_action == \"amend\"", "priority": 10, "then": [ { "type": "escalate", "escalation_id": "cco" } ] } ] }, "escalations": { "cco": { "role_required": "cco", "required_consents": 1 } } }
+  },
+  "vectors": [
+    {
+      "id": "issued-simple",
+      "description": "One genesis constitution requiring 2 directors; two distinct directors consent over exactly this issuance: ISSUED.",
+      "world": { "genesis_pin": "$digest:k0", "constitutions": { "k0": { "payload": "$payload:K_BOARD2", "from": "2026-01-01T00:00:00Z" } } },
+      "query": { "at": "2026-11-01T00:00:00Z", "iota": { "act": { "type": "authority.seal", "subject": "trading-policy", "params": { "digest": "$artifact", "version": "2.4" } }, "constitution": "$digest:k0", "at": "2026-11-01T00:00:00Z", "consents": [ { "role": "director", "holder": "alice", "over": "$act" }, { "role": "director", "holder": "bob", "over": "$act" } ] } },
+      "expect": { "status": "ISSUED" }
+    },
+    {
+      "id": "issued-routine-allow",
+      "description": "The constitution itself carves out a routine act (sealing the newsletter policy) as allow: ISSUED with no consents — the constitution decides what needs a quorum.",
+      "world": { "genesis_pin": "$digest:k0", "constitutions": { "k0": { "payload": "$payload:K_ROUTINE", "from": "2026-01-01T00:00:00Z" } } },
+      "query": { "at": "2026-11-01T00:00:00Z", "iota": { "act": { "type": "authority.seal", "subject": "newsletter-policy", "params": { "digest": "$artifact", "version": "1.0" } }, "constitution": "$digest:k0", "at": "2026-11-01T00:00:00Z", "consents": [] } },
+      "expect": { "status": "ISSUED" }
+    },
+    {
+      "id": "consents-insufficient",
+      "description": "One director where the constitution requires two: CONSENTS_INSUFFICIENT, naming required and counted.",
+      "world": { "genesis_pin": "$digest:k0", "constitutions": { "k0": { "payload": "$payload:K_BOARD2", "from": "2026-01-01T00:00:00Z" } } },
+      "query": { "at": "2026-11-01T00:00:00Z", "iota": { "act": { "type": "authority.seal", "subject": "trading-policy", "params": { "digest": "$artifact", "version": "2.4" } }, "constitution": "$digest:k0", "at": "2026-11-01T00:00:00Z", "consents": [ { "role": "director", "holder": "alice", "over": "$act" } ] } },
+      "expect": { "status": "CONSENTS_INSUFFICIENT", "required": 2, "counted": 1 }
+    },
+    {
+      "id": "consent-not-transplantable",
+      "description": "Two directors, but one consented over a DIFFERENT issuance digest: an approval never transplants to an altered seal.",
+      "world": { "genesis_pin": "$digest:k0", "constitutions": { "k0": { "payload": "$payload:K_BOARD2", "from": "2026-01-01T00:00:00Z" } } },
+      "query": { "at": "2026-11-01T00:00:00Z", "iota": { "act": { "type": "authority.seal", "subject": "trading-policy", "params": { "digest": "$artifact", "version": "2.4" } }, "constitution": "$digest:k0", "at": "2026-11-01T00:00:00Z", "consents": [ { "role": "director", "holder": "alice", "over": "$act" }, { "role": "director", "holder": "bob", "over": "$other" } ] } },
+      "expect": { "status": "CONSENTS_INSUFFICIENT", "required": 2, "counted": 1 }
+    },
+    {
+      "id": "duplicate-holder-counts-once",
+      "description": "The same director consenting twice is one consent: quorums count people, not signatures.",
+      "world": { "genesis_pin": "$digest:k0", "constitutions": { "k0": { "payload": "$payload:K_BOARD2", "from": "2026-01-01T00:00:00Z" } } },
+      "query": { "at": "2026-11-01T00:00:00Z", "iota": { "act": { "type": "authority.seal", "subject": "trading-policy", "params": { "digest": "$artifact", "version": "2.4" } }, "constitution": "$digest:k0", "at": "2026-11-01T00:00:00Z", "consents": [ { "role": "director", "holder": "alice", "over": "$act" }, { "role": "director", "holder": "alice", "over": "$act" } ] } },
+      "expect": { "status": "CONSENTS_INSUFFICIENT", "required": 2, "counted": 1 }
+    },
+    {
+      "id": "wrong-role-consent",
+      "description": "Two consents from a role the escalation does not name count for nothing.",
+      "world": { "genesis_pin": "$digest:k0", "constitutions": { "k0": { "payload": "$payload:K_BOARD2", "from": "2026-01-01T00:00:00Z" } } },
+      "query": { "at": "2026-11-01T00:00:00Z", "iota": { "act": { "type": "authority.seal", "subject": "trading-policy", "params": { "digest": "$artifact", "version": "2.4" } }, "constitution": "$digest:k0", "at": "2026-11-01T00:00:00Z", "consents": [ { "role": "observer", "holder": "carol", "over": "$act" }, { "role": "observer", "holder": "dan", "over": "$act" } ] } },
+      "expect": { "status": "CONSENTS_INSUFFICIENT", "required": 2, "counted": 0 }
+    },
+    {
+      "id": "prohibited-act",
+      "description": "The constitution forbids sealing the treasury policy outright: PROHIBITED, whatever the consents.",
+      "world": { "genesis_pin": "$digest:k0", "constitutions": { "k0": { "payload": "$payload:K_GUARDED", "from": "2026-01-01T00:00:00Z" } } },
+      "query": { "at": "2026-11-01T00:00:00Z", "iota": { "act": { "type": "authority.seal", "subject": "treasury-policy", "params": { "digest": "$artifact", "version": "1.0" } }, "constitution": "$digest:k0", "at": "2026-11-01T00:00:00Z", "consents": [ { "role": "director", "holder": "alice", "over": "$act" }, { "role": "director", "holder": "bob", "over": "$act" } ] } },
+      "expect": { "status": "PROHIBITED" }
+    },
+    {
+      "id": "incomplete-missing-governance-fact",
+      "description": "A blocking rule reads a fact ι does not carry (a regulatory freeze): INCOMPLETE naming it — silence about a fact that could forbid issuance is never permission (SPEC-008 §6.2, applied to governance).",
+      "world": { "genesis_pin": "$digest:k0", "constitutions": { "k0": { "payload": "$payload:K_GUARDED", "from": "2026-01-01T00:00:00Z" } } },
+      "query": { "at": "2026-11-01T00:00:00Z", "iota": { "act": { "type": "authority.seal", "subject": "trading-policy", "params": { "digest": "$artifact", "version": "2.4" } }, "constitution": "$digest:k0", "at": "2026-11-01T00:00:00Z", "consents": [ { "role": "director", "holder": "alice", "over": "$act" }, { "role": "director", "holder": "bob", "over": "$act" } ] } },
+      "expect": { "status": "INCOMPLETE", "open_facts": ["under_regulatory_freeze"] }
+    },
+    {
+      "id": "issued-after-valid-amendment",
+      "description": "K0 amended to K1 with a proper ι under K0 (two directors over exactly that amendment); the policy then issues under K1: ISSUED.",
+      "world": { "genesis_pin": "$digest:k0", "constitutions": { "k0": { "payload": "$payload:K_BOARD2", "from": "2026-01-01T00:00:00Z" }, "k1": { "payload": "$payload:K_BOARD2_V2", "from": "2026-06-01T00:00:00Z", "issuance": { "act": { "type": "constitution.amend", "subject": "constitution", "params": { "digest": "$digest:k1", "version": "2" } }, "constitution": "$digest:k0", "at": "2026-06-01T00:00:00Z", "consents": [ { "role": "director", "holder": "alice", "over": "$act" }, { "role": "director", "holder": "bob", "over": "$act" } ] } } } },
+      "query": { "at": "2026-11-01T00:00:00Z", "iota": { "act": { "type": "authority.seal", "subject": "trading-policy", "params": { "digest": "$artifact", "version": "2.4" } }, "constitution": "$digest:k1", "at": "2026-11-01T00:00:00Z", "consents": [ { "role": "director", "holder": "alice", "over": "$act" }, { "role": "director", "holder": "carol", "over": "$act" } ] } },
+      "expect": { "status": "ISSUED" }
+    },
+    {
+      "id": "wrong-act",
+      "description": "An ι authorizing a different digest than the seal presented: WRONG_ACT — a real decision about some other document justifies nothing here.",
+      "world": { "genesis_pin": "$digest:k0", "constitutions": { "k0": { "payload": "$payload:K_BOARD2", "from": "2026-01-01T00:00:00Z" } } },
+      "query": { "at": "2026-11-01T00:00:00Z", "iota": { "act": { "type": "authority.seal", "subject": "trading-policy", "params": { "digest": "b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2", "version": "2.4" } }, "constitution": "$digest:k0", "at": "2026-11-01T00:00:00Z", "consents": [ { "role": "director", "holder": "alice", "over": "$act" }, { "role": "director", "holder": "bob", "over": "$act" } ] } },
+      "expect": { "status": "WRONG_ACT" }
+    },
+    {
+      "id": "attack-faithless-officer",
+      "description": "C9 necessity. The officer seals with the genuine institution key; no board decision exists, so no ι exists. Enforced: NO_ISSUANCE_PROOF — the artifact is a draft wearing a signature. Ablated (custody as authorization — the pre-SPEC-015 world): ISSUED.",
+      "ablate": "C9",
+      "world": { "genesis_pin": "$digest:k0", "constitutions": { "k0": { "payload": "$payload:K_BOARD2", "from": "2026-01-01T00:00:00Z" } } },
+      "query": { "at": "2026-11-01T00:00:00Z", "iota": null },
+      "expect": { "status": "NO_ISSUANCE_PROOF" },
+      "expect_ablated": { "status": "ISSUED" }
+    },
+    {
+      "id": "attack-stale-constitution",
+      "description": "C10 necessity. The board tightened the constitution in June (1 director → 2); the November ι names April's lenient text and satisfies it, honestly. Enforced: STALE_CONSTITUTION — governance the institution withdrew authorizes nothing. Ablated (evaluate under the constitution the proof names): ISSUED.",
+      "ablate": "C10",
+      "world": { "genesis_pin": "$digest:k0", "constitutions": { "k0": { "payload": "$payload:K_BOARD1", "from": "2026-01-01T00:00:00Z" }, "k1": { "payload": "$payload:K_BOARD2", "from": "2026-06-01T00:00:00Z", "issuance": { "act": { "type": "constitution.amend", "subject": "constitution", "params": { "digest": "$digest:k1", "version": "2" } }, "constitution": "$digest:k0", "at": "2026-06-01T00:00:00Z", "consents": [ { "role": "director", "holder": "alice", "over": "$act" } ] } } } },
+      "query": { "at": "2026-11-01T00:00:00Z", "iota": { "act": { "type": "authority.seal", "subject": "trading-policy", "params": { "digest": "$artifact", "version": "2.4" } }, "constitution": "$digest:k0", "at": "2026-11-01T00:00:00Z", "consents": [ { "role": "director", "holder": "alice", "over": "$act" } ] } },
+      "expect": { "status": "STALE_CONSTITUTION" },
+      "expect_ablated": { "status": "ISSUED" }
+    },
+    {
+      "id": "attack-self-certified-genesis",
+      "description": "C11 necessity. A complete counterfeit institution: fresh constitution, internally valid ι, every signature genuine — sound relative to itself. Enforced: GENESIS_NOT_PINNED, because its genesis digest appears in no relying party's pin. Ablated (trust the presented origin): ISSUED.",
+      "ablate": "C11",
+      "world": { "genesis_pin": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", "constitutions": { "c0": { "payload": "$payload:K_CCO", "from": "2026-01-01T00:00:00Z" } } },
+      "query": { "at": "2026-11-01T00:00:00Z", "iota": { "act": { "type": "authority.seal", "subject": "trading-policy", "params": { "digest": "$artifact", "version": "2.4" } }, "constitution": "$digest:c0", "at": "2026-11-01T00:00:00Z", "consents": [ { "role": "cco", "holder": "mallory", "over": "$act" } ] } },
+      "expect": { "status": "GENESIS_NOT_PINNED" },
+      "expect_ablated": { "status": "ISSUED" }
+    },
+    {
+      "id": "attack-midnight-amendment",
+      "description": "C12 necessity. The officer who cannot meet the 2-director quorum first seals a friendlier constitution (CCO alone suffices) with only their own consent, then issues the policy validly under it. Enforced: INVALID_AMENDMENT — the new constitution binds nobody, and everything built on it fails transitively. Ablated (the newest genuine constitution wins): ISSUED — the coup, complete and silent.",
+      "ablate": "C12",
+      "world": { "genesis_pin": "$digest:m0", "constitutions": { "m0": { "payload": "$payload:K_BOARD2", "from": "2026-01-01T00:00:00Z" }, "m1": { "payload": "$payload:K_CCO", "from": "2026-06-01T00:00:00Z", "issuance": { "act": { "type": "constitution.amend", "subject": "constitution", "params": { "digest": "$digest:m1", "version": "2" } }, "constitution": "$digest:m0", "at": "2026-06-01T00:00:00Z", "consents": [ { "role": "director", "holder": "dave-the-cco", "over": "$act" } ] } } } },
+      "query": { "at": "2026-11-01T00:00:00Z", "iota": { "act": { "type": "authority.seal", "subject": "trading-policy", "params": { "digest": "$artifact", "version": "2.4" } }, "constitution": "$digest:m1", "at": "2026-11-01T00:00:00Z", "consents": [ { "role": "cco", "holder": "dave-the-cco", "over": "$act" } ] } },
+      "expect": { "status": "INVALID_AMENDMENT" },
+      "expect_ablated": { "status": "ISSUED" }
+    }
+  ]
+}
