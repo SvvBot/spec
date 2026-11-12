@@ -22,7 +22,7 @@ is a convenience and the files are authoritative.
 | [NOMOS-SPEC-015](NOMOS-SPEC-015.md) | Issuance Proofs | Draft | 0.2.0 |
 
 [`drafts/`](drafts/) holds proposed amendments to NOMOS-SPEC-001 (2.2.0, 2.3.0, 2.4.0) and revisions
-of NOMOS-SPEC-007 (1.8.0, 1.9.0, 1.10.0). It also keeps a short pointer at each place a
+of NOMOS-SPEC-007 (1.8.0, 1.9.0, 1.10.0, 1.11.0). It also keeps a short pointer at each place a
 specification used to live, so older links still lead somewhere.
 
 NOMOS-SPEC-007 onward stay Drafts until an independent implementation passes their vectors; see

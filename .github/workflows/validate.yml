@@ -84,14 +84,15 @@ jobs:
           python generate.py pub_lending_v1.nomos | cmp - vectors.json
           python mutants.py vectors.json | cmp - mutants.json
 
-      - name: SPEC-007 rev. 1.9 chain vectors (every listed order)
-        run: python chain-of-trust-vectors/python/check_19.py chain-of-trust-vectors/vectors-1.9.json
+      - name: SPEC-007 rev. 1.11 chain vectors (every listed order)
+        run: python chain-of-trust-vectors/python/check_19.py chain-of-trust-vectors/vectors-1.11.json
       - name: SPEC-007 rev. 1.10 revocation-source vectors
         run: python chain-of-trust-vectors/python/check_revocations.py chain-of-trust-vectors/revocation-vectors-1.10.json
       - name: SPEC-007 vectors and revocation mutants reproduce byte for byte
         working-directory: chain-of-trust-vectors
         run: |
           python generate_19.py | cmp - vectors-1.9.json
+          python generate_111.py | cmp - vectors-1.11.json
           python mutants_revocations.py revocation-vectors-1.10.json | cmp - revocation-mutants-1.10.json
 
       - name: SPEC-010 signature-suite vectors
@@ -143,7 +144,7 @@ jobs:
       - name: SPEC-007 vectors through the TypeScript prototype
         run: |
           npx tsx chain-of-trust-vectors/check.ts
-          npx tsx chain-of-trust-vectors/check-1.9.ts
+          npx tsx chain-of-trust-vectors/check-1.9.ts vectors-1.11.json
           npx tsx prototype/chain-of-trust/test.ts
 
       - name: SPEC-010 vectors through the independent Node verifier and the prototype

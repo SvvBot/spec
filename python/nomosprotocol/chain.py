@@ -182,7 +182,9 @@ def _candidates(target: str, root: str, pool: list, on_path: frozenset, depth: i
         yield []
         return
     if depth >= MAX_CHAIN or target in on_path: return
-    for c in sorted((c for c in pool if c.get("child_kid") == target), key=fingerprint):
+    # rev. 1.11: ties (certificates differing only in signature) break on the signature, so the
+    # verdict depends on the set presented, never on its order.
+    for c in sorted((c for c in pool if c.get("child_kid") == target), key=lambda c: (fingerprint(c), str(c.get("signature", "")))):
         for head in _candidates(c.get("parent_kid"), root, pool, on_path | {target}, depth + 1):
             yield head + [c]
 
@@ -205,7 +207,7 @@ def _validate(path: list, root_pem: str, now: datetime, admit: Admit,
               revoked_kids: Set[str], revoked_certs: Set[str], memo: Optional[dict] = None) -> Verdict:
     cur_pem, effective = root_pem, {}
     hops = []
-    for cert in path:
+    for index, cert in enumerate(path):
         ktype, _, reason = suites.load_key(cert["child_public_key_pem"])
         if reason: return _fail("ISSUER_NOT_RECOGNIZED", reason_code="invalid_key")
         if suites.compute_kid(cert["child_public_key_pem"]) != cert["child_kid"]:
@@ -229,6 +231,11 @@ def _validate(path: list, root_pem: str, now: datetime, admit: Admit,
             return _fail("OUT_OF_SCOPE", reason_code="malformed_scope")
         narrowed = dict(effective)
         for d, v in terms:
+            # rev. 1.11 §3.5: statement authority comes from the root. Below the root's own
+            # certificate a claim or consent term may only narrow one its parent already holds; a
+            # key with none (a sealing key) cannot certify witnesses or approvers.
+            if d in ("claim", "consent") and index > 0 and d not in effective:
+                return _fail("OUT_OF_SCOPE", dimension=d, reason_code="statement_below_root")
             if d in effective and not contains(d, effective[d], v):
                 return _fail("OUT_OF_SCOPE", dimension=d, reason_code="widening")
             narrowed[d] = v
