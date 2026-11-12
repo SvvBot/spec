@@ -28,6 +28,7 @@ function rowFor(md, file) {
     const cells = line.split('|').slice(1, -1).map((c) => c.trim());
     const status = cells.find((c) => /^(Active|Draft|Deprecated|Superseded)$/.test(c));
     const version = cells.find((c) => /^\d+\.\d+\.\d+$/.test(c));
+    if (!status && !version) continue; // a mention outside the index (the intro's layer table) is not the spec's row
     return { status, version };
   }
   return null;
