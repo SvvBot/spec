@@ -17,3 +17,6 @@ lean_lib Resolution where
 
 lean_lib Composition where
   srcDir := "resolution/lean"
+
+lean_lib Issuance where
+  srcDir := "issuance/lean"
