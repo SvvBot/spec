@@ -135,7 +135,7 @@ A `.nomos` artifact now moves through four distinct moments:
 | Implementation | Language | Covers | Checked against |
 |----------------|----------|--------|-----------------|
 | [`python/nomosprotocol/`](python/) — [`nomosprotocol` on PyPI](https://pypi.org/project/nomosprotocol/) | Python | JCS, SPEC-010 suites, SPEC-007 chains and revocation sources, the SPEC-008 Act verifier, SPEC-011 bindings; `accept()`, `act()`, `witness()`, `issuer()` for SPEC-009 | Every vector file here; generates the mutant sets |
-| [`prototype/chain-of-trust/`](prototype/chain-of-trust/) | TypeScript | SPEC-007 key certificates and chain verification, a CLI verifier, an HTTP receiver/presenter pair | SPEC-007 1.7.0 (14) and rev. 1.9 (37) vectors, SPEC-010 (30) |
+| [`prototype/chain-of-trust/`](prototype/chain-of-trust/) | TypeScript | SPEC-007 key certificates and chain verification, a CLI verifier, an HTTP receiver/presenter pair | SPEC-007 1.7.0 (14) and rev. 1.11 (41) vectors, SPEC-010 (30) |
 | [`suite-vectors/check.mjs`](suite-vectors/) | JavaScript, Node built-ins only | SPEC-010 suites, written separately from the Python reference | SPEC-010 (30) |
 | [`submission-vectors/reference-rp.mjs`](submission-vectors/) | JavaScript | A SPEC-009 relying party | `run.mjs` (17) |
 | [`verify/`](verify/), [`cli/`](cli/) | TypeScript, Python | Seal verification (SPEC-001 §8, SPEC-006 revocations); validate, exec, diff, lint | [`examples/`](examples/), [`conformance/`](conformance/) |
@@ -156,7 +156,7 @@ npm ci && pip install jsonschema ./python
 node scripts/check-links.mjs
 npx tsx conformance/run.ts                                            # SPEC-001: 23 checks
 node query-statement-vectors/check.mjs                                # SPEC-005: 7
-python3 chain-of-trust-vectors/python/check_19.py chain-of-trust-vectors/vectors-1.9.json                    # SPEC-007: 37
+python3 chain-of-trust-vectors/python/check_19.py chain-of-trust-vectors/vectors-1.11.json                   # SPEC-007: 41
 python3 chain-of-trust-vectors/python/check_revocations.py chain-of-trust-vectors/revocation-vectors-1.10.json # SPEC-007: 22
 python3 act-vectors/check.py act-vectors/vectors.json                 # SPEC-008: 48
 python3 suite-vectors/check.py suite-vectors/vectors.json             # SPEC-010: 30

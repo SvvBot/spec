@@ -54,7 +54,7 @@ The vector files are plain JSON. Each one's `_readme` says what to compute and w
 Our own runs, for comparison:
 ```
 python3 suite-vectors/check.py suite-vectors/vectors.json                                   # 30 passed
-python3 chain-of-trust-vectors/python/check_19.py chain-of-trust-vectors/vectors-1.9.json   # 37 passed
+python3 chain-of-trust-vectors/python/check_19.py chain-of-trust-vectors/vectors-1.11.json  # 41 passed
 python3 chain-of-trust-vectors/python/check_revocations.py chain-of-trust-vectors/revocation-vectors-1.10.json   # 22 passed
 python3 act-vectors/check.py act-vectors/vectors.json                                       # 45 passed
 node submission-vectors/selection.mjs --check                                               # 7 passed
@@ -76,6 +76,10 @@ implementation passed every vector and was still wrong.
    the purpose is a failed candidate. Try the next one, in certificate-fingerprint order.
 5. **The seal is checked after the path is chosen** (rev. 1.9 §4.7), so `OUT_OF_SCOPE` is decided
    before `SEAL_INVALID`.
+5a. **Statement authority comes from the root** (SPEC-007 rev. 1.11). A `claim` or `consent` term may
+   be introduced only on a certificate the pinned root signed; below the root it may only narrow.
+   Otherwise `OUT_OF_SCOPE` with `reason_code: "statement_below_root"`. Candidates whose fingerprints
+   tie are ordered by signature.
 6. **Consents count people, not keys** (SPEC-008 §4.4). Every admitted path to an approver key must
    carry the same `approver`, or the consent is `CONSENT_INVALID` (`approver_ambiguous`).
 7. **Small-order Ed25519 keys** (SPEC-010 0.2.0 §3.1). OpenSSL accepts a signature under the identity
