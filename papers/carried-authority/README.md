@@ -8,6 +8,7 @@ Everything here runs offline, with no secrets. The keys come from the published 
 | `ablate.py` → `ablation-results.json` | §7.1: removes one obligation at a time from the 0.4.0 verifier and presents an attack built from genuine statements (12/12 witnessed, plus the certificate-order ablation) |
 | `modelcheck2.py` → `modelcheck2-results.txt` | §7.2: small-scope check of omission safety over random prioritized rule sets, for the 0.4.0 gate, the 0.5.0 gate and a two-valued control |
 | `modelcheck.py` → `modelcheck-results.txt` | an earlier run where every escalation shares one identity; it cannot see the 0.4.0 gap, which is why the gap survived earlier testing |
+| `lean/Sufficiency.lean` | §5.3: Theorem 7 (sufficiency): an AUTHORIZED verdict implies S1–S5, with S2 composed from Proposition 1; and the necessity of C1.1, C1.2, C2.1, C2.2, C3 and C4 as counterexamples from genuine statements. S1 and S3–S5 follow from the checks under A1, A2, A4 and a collision-resistant binding digest (hypotheses); chain resolution (Propositions 2–4) is the relying party's `recognized` function, tested by the SPEC-007 vectors, not modelled |
 | `lean/CarriedAuthority.lean` | §5: Proposition 1 (omission safety) for the 0.5.0 gate, the never-DENIED corollary, and the 0.4.0 counterexample (vector 30), mechanized in Lean 4 (core only, no Mathlib) |
 | `pub_lending_v1.nomos` | the generator's input policy, copied from `../../act-vectors/` |
 
@@ -16,5 +17,6 @@ pip install cryptography
 python3 ablate.py vectors_040.json      # 12/12 necessity witnesses; rewrites ablation-results.json identically
 python3 modelcheck2.py 20000 2026       # ~17 minutes; reproduces modelcheck2-results.txt
 cd lean && lean CarriedAuthority.lean   # Lean 4.35; prints nothing on success
+cd .. && lake build Sufficiency           # Theorem 7 and the six necessity counterexamples (imports CarriedAuthority)
 cd ../../../act-vectors && python3 check.py vectors.json   # 32/32 under SPEC-008 0.5.0
 ```

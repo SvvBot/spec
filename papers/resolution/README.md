@@ -4,6 +4,7 @@ Everything here runs offline, with no secrets.
 
 | File | What it is |
 |---|---|
+| `lean/Composition.lean` | Parts II and III end to end: a resolution commit, with each member verified by Part II's verifier, implies every in-force, in-scope authority is legitimate and current and its rules on the true facts permit the act (imports Resolution and Sufficiency) |
 | `lean/Resolution.lean` | A mechanized model of NOMOS-SPEC-014 resolution and the combined verdict, written to follow the reference resolver step by step for one query. Lean 4.35, core library only, standard axioms only. |
 
 ## What is proved
@@ -27,8 +28,8 @@ Everything here runs offline, with no secrets.
 - The walk over pins and recognition edges: theorems are stated for the registrars the walk reached (`WalkComplete` states what it must deliver; the reference resolver's tests check it).
 - Log heads, signatures, forks and the view-age bound.
 - The meaning of CONFLICT beyond its definition (exclusive claims from two registrars).
-- Each authority's own verdict, which is Part II's result (`../../carried-authority/lean/`), assumed here rather than imported.
 
 ```
 cd lean && lean Resolution.lean    # Lean 4.35; prints the axioms each main theorem uses
+cd .. && lake build Composition    # Parts II and III together
 ```

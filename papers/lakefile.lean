@@ -1,0 +1,19 @@
+import Lake
+open Lake DSL
+
+/-! The series' mechanized proofs, as one Lake package so they can import each other.
+    Core library only. `lake build` checks everything. Each original file still checks alone
+    with `lean <file>.lean`. -/
+package papers
+
+lean_lib CarriedAuthority where
+  srcDir := "carried-authority/lean"
+
+lean_lib Sufficiency where
+  srcDir := "carried-authority/lean"
+
+lean_lib Resolution where
+  srcDir := "resolution/lean"
+
+lean_lib Composition where
+  srcDir := "resolution/lean"
