@@ -33,3 +33,7 @@ lean_lib Completeness where
 @[default_target]
 lean_lib Chain where
   srcDir := "carried-authority/lean"
+
+@[default_target]
+lean_lib Containment where
+  srcDir := "carried-authority/lean"
