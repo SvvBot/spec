@@ -1,19 +1,29 @@
 # NOMOS Protocol — Open Specification
 
 [![Validate](https://github.com/nomos-spec/spec/actions/workflows/validate.yml/badge.svg)](https://github.com/nomos-spec/spec/actions/workflows/validate.yml)
-[![Specifications: 13](https://img.shields.io/badge/specifications-13-blue)](spec/)
+[![Specifications: 15](https://img.shields.io/badge/specifications-15-blue)](spec/)
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 [![IANA Media Type](https://img.shields.io/badge/IANA-application%2Fvnd.nomos%2Bjson-brightgreen)](https://www.iana.org/assignments/media-types/application/vnd.nomos+json)
 
-The **NOMOS Protocol** is an open, vendor-neutral specification for **Computable Authority**: making an institution's authority over an action something any system can check, before the action takes effect. Its principle: authorize the act, not the agent.
+The **NOMOS Protocol** is an open, vendor-neutral specification for **Computable Authority**: making an institution's authority over an action something any system can check, before the action takes effect. Its principle: **authorize the act, not the agent**.
 
-Machine-readable policy lets a model apply the rules. Computable Authority lets any system check, without trusting the model or the vendor, that an action was authorized.
+Policy-as-code makes rules executable by whoever runs the engine. Computable Authority makes the authorization itself checkable: the system where an action would take effect can establish — without trusting the agent, the model, or the vendor — that this exact action is authorized under the institution's rules.
 
-An institution's rules travel as a `.nomos` artifact: a JSON document containing the rules, with references to the source text they came from, and a cryptographic seal — signed with Ed25519 by default, so anyone can verify an artifact is authentic and unmodified offline, with the publisher's public key alone, no server call and no shared secret. Any compliant runtime can load a `.nomos` artifact and evaluate decisions against it — deterministically, without calling an AI model at runtime.
+An institution's rules travel as a `.nomos` artifact: a JSON document holding the rules, references to the source text they came from, and a cryptographic seal (Ed25519 by default). The seal is checkable offline with the publisher's public key alone — no server call, no shared secret — and it proves exactly one thing: this artifact, unmodified, from this key. Who that key belongs to is a separate question, answered by a chain of certificates to a root the verifier pins ([SPEC-007](spec/NOMOS-SPEC-007.md)). Whether the institution itself — by its own constitution, not just a keyholder — decided the sealing is a third, answered by an issuance proof ([SPEC-015](spec/NOMOS-SPEC-015.md)). The protocol keeps these apart, because collapsing them is how key custody quietly becomes institutional authority. Any compliant runtime can load a `.nomos` artifact and evaluate decisions against it — deterministically, without calling an AI model at runtime.
+
+Agents increasingly act on behalf of organisations — a bank, a hospital, a ministry, a supplier. A service an agent calls needs more than "this is an agent": it needs to know who the agent acts for, what is allowed, and how to check that without calling anyone. The fifteen specifications cover it in five layers:
+
+| Layer | Specs | What it answers |
+|-------|-------|-----------------|
+| **Authority** | [001](spec/NOMOS-SPEC-001.md)–[006](spec/NOMOS-SPEC-006.md) | The institution's rules as a sealed artifact: evaluated deterministically, composed, time-bounded, queried publicly, revoked |
+| **Recognition** | [007](spec/NOMOS-SPEC-007.md) | A stranger recognizes the issuer — offline, through key certificates, against a root the verifier pins |
+| **The Act** | [008](spec/NOMOS-SPEC-008.md)–[010](spec/NOMOS-SPEC-010.md) | One exact action bound to sealed rules, signed facts from authorized witnesses and human consents, so the system that would make the change verifies locally and commits exactly that change or nothing; how an agent finds that system and hands it the Act; the signature suites every verifier accepts |
+| **Enforcement** | [011](spec/NOMOS-SPEC-011.md)–[012](spec/NOMOS-SPEC-012.md) | Where Acts aren't verifiable yet: which tool argument is which fact the policy reads, and what a gateway or an agent's pre-tool hook must do, from failing closed to approvals bound to one exact call |
+| **The public square** | [013](spec/NOMOS-SPEC-013.md)–[015](spec/NOMOS-SPEC-015.md) | A registry of authorities that publishes what it offers so nobody has to trust it; resolution — *which* authorities govern this act, completely, from registrar logs the carrier cannot influence; issuance proofs — did the institution *decide* this sealing, not just sign it |
+
+Each specification states its own status. Five are Active; the rest are Drafts, and a Draft leaves Draft only when a second, **independent** implementation passes its published vectors — two such implementations are invited now ([#32](https://github.com/nomos-spec/spec/issues/32), [#33](https://github.com/nomos-spec/spec/issues/33)).
 
 The research behind the discipline is at **[computableauthority.com](https://computableauthority.com)**.
-
-Agents increasingly act on behalf of organisations — a bank, a hospital, a ministry, a supplier. A service an agent calls needs more than "this is an agent": it needs to know who the agent acts for, what it is allowed to do, and whether it can check that without calling anyone. NOMOS-SPEC-001 through 010 specify that, end to end: the institution's rules as a sealed artifact (001–006), the chain of certificates that lets a stranger recognize the issuer (007), the **Act** (008) — a self-verifying package that binds one exact action to those rules, to signed facts from authorized witnesses, and to human consents, so the system that would make the change verifies it locally and commits exactly that change or nothing — how an agent finds that system and hands it the Act (009), and the signature suites every verifier accepts (010). Where the system can't verify an Act yet, NOMOS-SPEC-011 and 012 say how a gateway or an agent's own pre-tool hook checks each call first: which tool argument is which fact the policy reads (011), and what such an enforcement point must do, from failing closed to approvals bound to one exact call (012). NOMOS-SPEC-013 says how a registry of authorities publishes what it offers so nobody has to trust it: a signed catalogue, an append-only log with a signed head, standing kept apart from evidence, and how a caller says who is asking.
 
 **Contents:** [Specifications](#specifications) · [Start here](#start-here) · [Try it in a minute](#try-it-in-a-minute) · [Why](#why) · [Implementations](#implementations) · [Conformance](#conformance) · [Repository map](#repository-map) · [How the specifications change](#how-the-specifications-change) · [Citing](#citing) · [Links](#links)
 
