@@ -7,6 +7,12 @@ Spec versions follow [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [NOMOS-SPEC-014 0.3.0] — 2026-11-12 (Context fidelity: the last self-description)
+
+### Added
+- **CF — context fidelity** (`spec/NOMOS-SPEC-014.md` §3.2): a claim MAY mark context fields `witness_required` (field → witness class); a query MAY carry `witnessed` (field → attested classes). A witness-required field whose value arrived unwitnessed (or under the wrong class) is UNDECIDED for that claim's scope — never FALSE — and surfaces in `missing.unwitnessed` as `{ fact, class }`. Rationale: C5 stopped the carrier choosing the law, but the context the scopes evaluate over was still anyone's say-so, and the demand for proof cannot live downstream — a false value deletes the very law whose data contract would have demanded it. The attestation transport is a SPEC-008 witness statement under a SPEC-007-certified key, verified by the caller; this spec governs only when an unwitnessed value may decide.
+- **`attack-misdescribed-act`** vector (ablation `CF`) plus two companions (`context-fidelity-witnessed-value-counts`, `context-fidelity-wrong-class`): `resolution-vectors/vectors.json` now holds 23 vectors. §8 gains the fifth attack; what CF does not solve (the witness's own truthfulness — A4, relocated and shrunk) is stated, not hidden.
+
 ## [NOMOS-SPEC-015 0.1.0] — 2026-11-12 (Issuance proofs: did the institution decide this sealing)
 
 ### Added
