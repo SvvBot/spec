@@ -6,17 +6,22 @@ open Lake DSL
     with `lean <file>.lean`. -/
 package papers
 
+@[default_target]
 lean_lib CarriedAuthority where
   srcDir := "carried-authority/lean"
 
+@[default_target]
 lean_lib Sufficiency where
   srcDir := "carried-authority/lean"
 
+@[default_target]
 lean_lib Resolution where
   srcDir := "resolution/lean"
 
+@[default_target]
 lean_lib Composition where
   srcDir := "resolution/lean"
 
+@[default_target]
 lean_lib Issuance where
   srcDir := "issuance/lean"
