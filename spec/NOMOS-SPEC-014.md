@@ -1,7 +1,7 @@
 # NOMOS-SPEC-014: Resolution
 
 **Status:** Draft
-**Version:** 0.2.0
+**Version:** 0.3.0
 **Proposed:** 2026-11-11
 **Revised:** 2026-11-12 (0.2.0: closure agreement, view age, the C7 attack restated; see §10)
 **Authors:** Safehaven AI Corp. / NOMOS Protocol Working Group
@@ -87,6 +87,13 @@ exists so conflicts are *detectable* (§5); it grants nothing.
 folded record) and `query = { context, at }`. `at` is an RFC 3339 instant; membership, windows,
 supersession and closure freshness are all judged at `at`.
 
+The query MAY carry `witnessed`: a map from context field to the list of **witness classes**
+under which its value was attested (e.g. `{ "jurisdiction": ["geo"] }`). How a value is attested
+is out of band for this specification — the expected transport is a NOMOS-SPEC-008 witness
+statement whose key is certified (NOMOS-SPEC-007) for that class, verified by the caller before
+resolving. This specification governs only the consequence: when an unwitnessed value may
+decide, and what happens when it may not.
+
 ### 3.2 Scope evaluation is three-valued, by the NOMOS-SPEC-008 evaluator
 
 A scope predicate over a context is TRUE, FALSE or UNDECIDED with exactly NOMOS-SPEC-008 §6.2's
@@ -100,6 +107,23 @@ A conforming resolver MAY implement this by delegating to any conforming NOMOS-S
 evaluator: construct, per predicate, a two-decision artifact — the predicate as an `allow` at
 priority 1 and as a `block` at priority 2, default outcome `escalate` — and read `block` as
 TRUE, `escalate` as FALSE, `undecided` as UNDECIDED.
+
+**CF — context fidelity.** A claim MAY carry `witness_required`: a map from context field to the
+witness class whose attestation that field's value needs before this claim's scope may read it
+(e.g. `{ "jurisdiction": "geo" }`). The registrar, who knows what its law turns on, decides which
+fields are too load-bearing for anyone's say-so. When a resolver evaluates that claim's scope, a
+field named in `witness_required` counts only if the query's `witnessed` lists it under the
+required class; otherwise the field is treated as ABSENT for that evaluation — UNDECIDED, never
+FALSE — and the resolution MUST surface it both among the missing context facts and in
+`missing.unwitnessed` as `{ fact, class }`. An unwitnessed value MUST NOT evaluate a scope to
+FALSE: FALSE removes the law, and removal is exactly what an unverified value must never buy.
+Fields not named in `witness_required` read bare values as before; other claims' evaluations of
+the same field are unaffected.
+
+Why this cannot live downstream: an artifact's own data contract can demand witnessed facts, but
+it is consulted only after resolution has put that artifact's law in the set — a false context
+fact deletes the law whose contract would have demanded the proof. The demand must sit on the
+registrar's claim, upstream of every law it selects.
 
 ### 3.3 The algorithm (normative)
 
@@ -149,7 +173,8 @@ request listing "the authorities checked" MUST NOT influence membership.
 Exactly one of, with precedence INCOMPLETE > CONFLICT > RESOLVED:
 
 - **INCOMPLETE** — any open context fact, unreachable pinned registrar, missing or stale
-  closure, closure disagreement, or view older than the relying party's bound. Each MUST be
+  closure, closure disagreement, a witness-required context field whose value arrived
+  unwitnessed (CF), or view older than the relying party's bound. Each MUST be
   named. For a consequential act, INCOMPLETE MUST NOT be read as
   permission, and a resolver MUST NOT return the subset it could establish as if it were the
   answer. (Precedence: a missing fact could still dissolve an apparent conflict.)
@@ -198,7 +223,7 @@ vector, a world, a query, and the expected result; vectors with an `ablate` fiel
 carry `expect_ablated` — the behavior of an implementation missing exactly that condition, i.e.
 the attack succeeding. The C7 ablation judges membership at the vector's `ablate_at` while
 closures are still judged at `at`; the C8 ablation reads no closure, no closure contents and no
-view age. A conforming resolver MUST produce every `expect`, MUST NOT produce any
+view age; the CF ablation reads witness-required fields as if bare values counted. A conforming resolver MUST produce every `expect`, MUST NOT produce any
 `expect_ablated` (except in an explicit test-only ablation mode), and MUST be order-independent
 under shuffling of every list in the world. An implementation offering ablation modes SHOULD also
 show that each attack succeeds under its own ablation and under no other.
@@ -233,6 +258,15 @@ Each attack uses only genuine, correctly signed artifacts. Each is a published v
   closure** (a genuine withdrawal while a fresh closure still names the law; closure agreement
   stops it) and the **stale view** (a cached copy whose closure is inside its own bound; the
   view-age bound stops it).
+- **The misdescribed act** (without CF): no forged key, no hidden law — the carrier's side simply
+  states a context field conveniently (`jurisdiction: QA` about an act that lands in the EU), or
+  the relying party fills it from records that are the same say-so one hop removed. The scope
+  reads the bare value, evaluates FALSE, and the law leaves the set with every signature intact.
+  Under CF a witness-required field without its attestation is UNDECIDED: the answer is held
+  open naming the fact and the class, and lying stops being an exit from the law — at worst it
+  stops the act. What CF does not solve is the witness's own truthfulness: NOMOS-SPEC-008's A4
+  assumption, relocated one layer up and shrunk to one named, certified, revocable attester per
+  fact.
 
 Containment. An added applicability claim, from any key, never removes a member: the worst case
 is wrongful refusal, the safe direction. Removing law takes one of withdrawal, supersession or
@@ -247,11 +281,21 @@ two-key act.
 
 Inherited and stated, not hidden: registrar governance (who may close a scope — the
 NOMOS-SPEC-007 §9 question squared); characterization of context fields beyond the v0
-vocabulary; private-law resolution (contracts as authorities); freshness economics per scope
+vocabulary; the witness-class vocabulary and who certifies context witnesses per class (CF's
+residue); private-law resolution (contracts as authorities); freshness economics per scope
 class, now two bounds (closure age and view age); and the Draft-exit condition — a second,
 independent implementation agreeing on every vector.
 
 ## 10. Changes
+
+**0.3.0 (2026-11-12).** Context fidelity (CF): the last self-description. C5 stopped the carrier
+choosing the law; the context the scopes evaluate over was still anyone's say-so, and a false
+value does not merely mislead — it deletes the very law whose own data contract would have
+demanded proof (a demand placed downstream is removed by the lie it guards against). Claims gain
+`witness_required`, queries gain `witnessed`, and a witness-required field without its
+attestation is UNDECIDED for that claim's scope — never FALSE — surfacing in
+`missing.unwitnessed`. Three new vectors including the attack (`attack-misdescribed-act`,
+ablation `CF`).
 
 **0.2.0 (2026-11-12).** Found by mechanizing the resolver
 ([`papers/resolution/lean/Resolution.lean`](../papers/resolution/lean/Resolution.lean)):
