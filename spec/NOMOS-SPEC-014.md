@@ -45,7 +45,9 @@ published vector. The key words MUST, MUST NOT, SHOULD and MAY are to be read as
 - **Applicable set 𝒜:** the authorities whose verdicts must all be satisfied for the act.
 - **Closure statement:** a registrar's signed assertion that a list of in-force authorities over
   a scope is complete as of a time. The authenticated denial of existence for law. A later closure
-  over the same scope replaces an earlier one from the later one's `at`.
+  over the same scope, or under the same label (the entry's `name`), replaces an earlier one from
+  the later one's `at`; the label lets a re-signed list whose scope was narrowed replace the one it
+  corrects.
 - **View:** the folded registrar record a resolver reads, and the time its log head was signed or
   read (`head_at`). A view read live from the chain has age zero; a mirrored or cached one does not.
 - **Relying party ρ:** as in NOMOS-SPEC-008, extended with a set of **pins**: the registrars
@@ -70,7 +72,7 @@ zeros; the signed head as there). Four entry kinds are added:
 claim at the new entry's `at` and opens the new terms). A NOMOS-SPEC-013 `withdrawn` entry
 closes the named authority's open claim at its `at`. A NOMOS-SPEC-013 `revoked` entry adds the
 authority to the registrar's revoked set. `closed` statements accumulate, and a later closure
-over the same scope replaces an earlier one from its `at`; `superseded` records the edge from its
+over the same scope or under the same label replaces an earlier one from its `at`; `superseded` records the edge from its
 own `at`. A resolver MUST derive the registrar's state only by this fold —
 never from a side channel the chain does not witness.
 
@@ -115,7 +117,8 @@ is not followed and imposes no obligations on its target). For each reached regi
    (`max_age_days`, default 90). A pinned registrar that is unreachable, or has no fresh
    covering closure, makes the resolution INCOMPLETE naming it. A closure dated after `at` does
    not cover `at` — a later enumeration does not speak for an earlier moment; a closure replaced
-   by a later one over the same scope (signed at or before `at`) does not speak either.
+   by a later one over the same scope or under the same label (signed at or before `at`) does not
+   speak either.
 
    **Closure agreement.** A closure is the registrar's own statement of what is in force, so it
    MUST NOT contradict the registrar's chain. Among the registrar's fresh, unreplaced closures
@@ -256,7 +259,7 @@ independent implementation agreeing on every vector.
 - Closure agreement (§3.3, C8). In 0.1.0 a closure's freshness was read but never its list, so a
   genuine withdrawal hid law while an older closure still named it.
 - View age (§3.3, C8). 0.1.0 gave no way to tell a stale copy of a log from the live one.
-- A later closure over the same scope replaces an earlier one (§1, §2).
+- A later closure over the same scope, or under the same label, replaces an earlier one (§1, §2).
 - §8: C6 is restated as protection against wrongful refusal; the C7 attack is restated as
   membership judged at a stale instant; containment is restated as attribution.
 - Vectors: 20 (from 16); the zombie vector judges membership at `ablate_at`; new vectors for a
