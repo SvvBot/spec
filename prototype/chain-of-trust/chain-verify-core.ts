@@ -86,7 +86,8 @@ function* candidates(target: string, root: string, pool: KeyCertificate[], onPat
   if (depth >= MAX_CHAIN_LENGTH || onPath.has(target)) return;
   const parents = pool.filter((c) => c.child_kid === target)
     .map((c) => ({ c, fp: keyCertFingerprint(c) }))
-    .sort((a, b) => (a.fp < b.fp ? -1 : a.fp > b.fp ? 1 : 0));
+    // rev. 1.11: ties (certificates differing only in signature) break on the signature.
+    .sort((a, b) => (a.fp < b.fp ? -1 : a.fp > b.fp ? 1 : a.c.signature < b.c.signature ? -1 : a.c.signature > b.c.signature ? 1 : 0));
   const next = new Set(onPath).add(target);
   for (const { c } of parents) for (const head of candidates(c.parent_kid, root, pool, next, depth + 1)) yield [...head, c];
 }
@@ -95,7 +96,7 @@ function* candidates(target: string, root: string, pool: KeyCertificate[], onPat
 function validate(path: KeyCertificate[], rootPem: string, now: Date, purpose: Purpose, revokedKids: Set<string>, revokedCerts: Set<string>): Resolved | ResolveFailure {
   let pem = rootPem, scope: ScopeTerms = UNRESTRICTED;
   const hops: Hop[] = [];
-  for (const cert of path) {
+  for (const [index, cert] of path.entries()) {
     const link = `${cert.parent_kid} → ${cert.child_kid}`;
     if ("reason" in loadKey(cert.child_public_key_pem)) return { decision: "ISSUER_NOT_RECOGNIZED", reason_code: "invalid_key", detail: `Certificate ${link} carries a key that is not a canonical Ed25519 or P-256 SPKI.` };
     if (kidOf(cert.child_public_key_pem) !== cert.child_kid) return { decision: "ISSUER_NOT_RECOGNIZED", reason_code: "kid_mismatch", detail: `Certificate ${link}: child_kid is not the key's id.` };
@@ -107,6 +108,13 @@ function validate(path: KeyCertificate[], rootPem: string, now: Date, purpose: P
     if (revokedKids.has(cert.child_kid)) return { decision: "KEY_REVOKED", revoked_kid: cert.child_kid, detail: `Key ${cert.child_kid} has been revoked.` };
     const parsed = parseScope(cert.scope);
     if (!parsed.ok) return { decision: "OUT_OF_SCOPE", reason_code: "malformed_scope", detail: `Certificate ${link}: ${parsed.detail}` };
+    // rev. 1.11 §3.5: below the root's own certificate a claim or consent term may only narrow one
+    // the parent already holds; a sealing key cannot certify witnesses or approvers.
+    for (const d of ["claim", "consent"]) {
+      if (index > 0 && d in parsed.scope.terms && !(d in scope.terms)) {
+        return { decision: "OUT_OF_SCOPE", dimension: d, reason_code: "statement_below_root", detail: `Certificate ${link}: a ${d} term may be introduced only by the pinned root (rev. 1.11 §3.5).` } as ResolveFailure;
+      }
+    }
     const narrowing = isNarrowerOrEqual(parsed.scope, scope);
     if (!narrowing.ok) return { decision: "OUT_OF_SCOPE", dimension: narrowing.dimension, reason_code: "widening", detail: `Certificate ${link}: ${narrowing.detail}` };
     hops.push({ cert, parentPem: pem, parentScope: scope });

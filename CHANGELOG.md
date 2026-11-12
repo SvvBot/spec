@@ -18,6 +18,19 @@ Draft, per the house rule: no interoperability claim until an independent implem
 
 ---
 
+## [NOMOS-SPEC-007 rev. 1.11.0] — 2026-11-12 (Statement authority comes from the root)
+
+### Changed
+- **§3.5: a `claim` or `consent` term may be introduced only on a certificate from the pinned root; below it, it may only narrow one the parent already holds** (`OUT_OF_SCOPE`, `reason_code: "statement_below_root"`). Under rev. 1.8–1.10 a sealing key, which may not testify or consent itself, could certify keys that could, so one stolen issuer key could supply the rules, the facts they read and approvers for any quorum. Found by mechanizing chain resolution in Lean; reproduced against the references first. **Fixed in `@nomosprotocol/verify` 1.5.0**, which refuses chains 1.4.0 accepted.
+- **§4.2a: certificates with the same fingerprint are tried in signature order,** so the verdict never depends on presentation order (Part II, Proposition 4). Fixed in `@nomosprotocol/verify` 1.5.0.
+- **Vectors:** `chain-of-trust-vectors/vectors-1.11.json` (41 cases, `generate_111.py`); against a rev. 1.10 resolver exactly the four new cases fail. CI checks 1.11; `vectors-1.9.json` stays as the record of rev. 1.9.
+- The Python reference and the TypeScript prototype implement both changes.
+
+### Added
+- **Proofs** (Lean 4, core only, standard axioms; `cd papers && lake build`): Part II Theorem 8 (completeness under disclosure), Theorem 9 (compromise containment) and Theorem 10 (reproducibility), with the deciding decision shown to exist, be unique and be computed in one pass; Propositions 2–3 (no amplification, complete revocation) and the rev. 1.11 key-purpose rule (`papers/carried-authority/lean/Chain.lean`).
+
+---
+
 ## [NOMOS-SPEC-015 0.2.0] — 2026-11-12 (Issuance proofs: consents from certified holders, currency when the seal was made)
 
 ### Changed

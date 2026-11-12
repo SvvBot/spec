@@ -51,6 +51,7 @@ Proposed amendments and revisions awaiting promotion are in [`spec/drafts/`](spe
 | [SPEC-007 rev. 1.8.0](spec/drafts/NOMOS-SPEC-007-rev-1.8.0.md) | 007 | Statement keys (witness `claim`, approver `consent` scopes) and target-first chain resolution |
 | [SPEC-007 rev. 1.9.0](spec/drafts/NOMOS-SPEC-007-rev-1.9.0.md) | 007 | Scope-aware path selection, normative check order, `suite` and `approver` dimensions, ES256 |
 | [SPEC-007 rev. 1.10.0](spec/drafts/NOMOS-SPEC-007-rev-1.10.0.md) | 007 | Revocation a relying party can check: ES256 and certificate revocations, statements count only from a parent the root reaches, self-checkable lists, fail closed on stale knowledge |
+| [SPEC-007 rev. 1.11.0](spec/drafts/NOMOS-SPEC-007-rev-1.11.0.md) | 007 | Statement authority comes from the root: a sealing key cannot certify witnesses or approvers; ties in candidate order break on the signature |
 
 Each draft names the specification it amends, and SPEC-008 names the ones it builds on in its header. The rendered specifications are also at [nomosprotocol.com/spec](https://nomosprotocol.com/spec).
 
