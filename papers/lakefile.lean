@@ -29,3 +29,7 @@ lean_lib Issuance where
 @[default_target]
 lean_lib Completeness where
   srcDir := "carried-authority/lean"
+
+@[default_target]
+lean_lib Chain where
+  srcDir := "carried-authority/lean"
