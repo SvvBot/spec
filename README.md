@@ -31,7 +31,7 @@ Every specification is in [`spec/`](spec/), whatever its status. Each file state
 | [004](spec/NOMOS-SPEC-004.md) | Composable Artifacts (`extends`) and Third-Party Attestations | Active | 1.4.0 | |
 | [005](spec/NOMOS-SPEC-005.md) | Public Query Extension: keyless queries, permanent transcripts, signed statements | Draft | 1.6.0 | [`query-statement-vectors/`](query-statement-vectors/) (7) |
 | [006](spec/NOMOS-SPEC-006.md) | Artifact Revocation: detached issuer-signed statements, signed revocation list, `max_age` | Active | 1.6.0 | |
-| [007](spec/NOMOS-SPEC-007.md) | Chain-of-Trust Key Certificates: recognizing an issuer with no prior relationship and no call home | Draft | 1.7.0 | [`chain-of-trust-vectors/`](chain-of-trust-vectors/) (14 + 37 + 22, 349 mutants) |
+| [007](spec/NOMOS-SPEC-007.md) | Chain-of-Trust Key Certificates: recognizing an issuer with no prior relationship and no call home | Draft | 1.7.0 | [`chain-of-trust-vectors/`](chain-of-trust-vectors/) (14 + 41 + 22, 349 mutants) |
 | [008](spec/NOMOS-SPEC-008.md) | Act Binding: one exact action bound to sealed rules, signed testimony and human consents | Draft | 0.7.0 | [`act-vectors/`](act-vectors/) (46, 1,804 mutants) |
 | [009](spec/NOMOS-SPEC-009.md) | Discovery and Submission: well-known documents, the HTTP binding, certificate presentation | Draft | 0.2.0 | [`submission-vectors/`](submission-vectors/) (17 HTTP checks, 7 selection cases) |
 | [010](spec/NOMOS-SPEC-010.md) | Signature Suites: `Ed25519`, `ES256`, `WebAuthn-ES256`; canonical keys | Draft | 0.2.0 | [`suite-vectors/`](suite-vectors/) (30) |

@@ -56,7 +56,7 @@ Our own runs, for comparison:
 python3 suite-vectors/check.py suite-vectors/vectors.json                                   # 30 passed
 python3 chain-of-trust-vectors/python/check_19.py chain-of-trust-vectors/vectors-1.11.json  # 41 passed
 python3 chain-of-trust-vectors/python/check_revocations.py chain-of-trust-vectors/revocation-vectors-1.10.json   # 22 passed
-python3 act-vectors/check.py act-vectors/vectors.json                                       # 45 passed
+python3 act-vectors/check.py act-vectors/vectors.json                                       # 48 passed
 node submission-vectors/selection.mjs --check                                               # 7 passed
 ```
 
